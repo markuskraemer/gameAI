@@ -6,6 +6,8 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class MapService {
 
+    public readonly tileSize:number = 25;
+    
     private mapJSON:any;
     private _loaded:boolean;
 
@@ -34,5 +36,26 @@ export class MapService {
     public get currentMap ():IMapData {
         return this.mapJSON ? this.mapJSON.layers[0] : null;
     }
+
+    public get mapWidth ():number {
+         if(!this.loaded){
+             return 0;
+         }
+         return this.currentMap.width * this.tileSize;
+     }
+
+     public get mapHeight ():number {
+         if(!this.loaded){
+             return 0;
+         }
+         return this.currentMap.height * this.tileSize;
+     }
+
+     public getTileAt (x:number, y:number):number {
+         const r:number = Math.floor(x / this.tileSize);
+         const c:number = Math.floor(y / this.tileSize);
+         const index:number = c * this.currentMap.width + r;
+         return this.currentMap.data[index];
+     }
 
 }

@@ -1,5 +1,5 @@
+import { MapService } from './../map.service';
 import { GameService } from './../game.service';
-import { Alias } from './../../Alias';
 import { IMapData } from '../IMapData';
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 
@@ -26,7 +26,8 @@ export class MapComponent implements OnInit {
 
     constructor(
         private elementRef:ElementRef,
-        public gameService:GameService
+        public gameService:GameService,
+        public mapService:MapService
     ) { }
 
     ngOnInit() {
@@ -41,10 +42,10 @@ export class MapComponent implements OnInit {
         for(let i:number = 0; i < tiles.length; ++i){
             const tile:number = tiles[i];
            
-            const x:number = i % this._mapData.width * this.gameService.tileSize;
-            const y:number = Math.floor(i / this._mapData.width) * this.gameService.tileSize;
+            const x:number = i % this._mapData.width * this.mapService.tileSize;
+            const y:number = Math.floor(i / this._mapData.width) * this.mapService.tileSize;
             context.fillStyle = this.getBackgroundColor(tile);
-            context.fillRect (x, y, this.gameService.tileSize, this.gameService.tileSize);
+            context.fillRect (x, y, this.mapService.tileSize, this.mapService.tileSize);
         }
     }
 

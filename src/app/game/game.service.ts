@@ -1,45 +1,55 @@
+import { TickService } from './../tick.service';
+import { KeyboardService } from './Keyboard.service';
 import { MapService } from './map.service';
 import { Character } from './Character';
 import { Alias } from './../Alias';
 import { Injectable } from '@angular/core';
+import { Key } from 'ts-keycode-enum';
 
 @Injectable()
 export class GameService {
 
-    private _player:Character;
+    private _character:Character;
 
-    public readonly tileSize:number = 25;
+   
 
-    public get player ():Character {
-        return this._player;
+    public get character ():Character {
+        return this._character;
     }
 
     constructor(
-        private mapService:MapService
+        private mapService:MapService,
+        private keyboardService:KeyboardService,
+        private tickService:TickService
     ) {
         Alias.gameService = this;
         this.createPlayer ();
+        this.tickService.tick.subscribe (()=>{
+            this.tick ();
+        })
      }
 
      private createPlayer ():void {
-        this._player = new Character ();
-        this._player.x = 45;
-        this._player.y = 88;
+        this._character = new Character (this, this.mapService);
+        this._character.x = 37.5;
+        this._character.y = 120;
      }
 
-     public get mapWidth ():number {
-         if(!this.mapService.loaded){
-             return 0;
+     private tick ():void {
+         if(this.keyboardService.isPressed(Key.W)){
+             this._character.moveForward ();
          }
-         return this.mapService.currentMap.width * this.tileSize;
-     }
 
-     public get mapHeight ():number {
-         if(!this.mapService.loaded){
-             return 0;
+        if(this.keyboardService.isPressed(Key.A)){
+             this._character.rotateLeft ();
          }
-         return this.mapService.currentMap.height * this.tileSize;
+
+        if(this.keyboardService.isPressed(Key.D)){
+             this._character.rotateRight ();
+         }
+
      }
 
+   
 
 }

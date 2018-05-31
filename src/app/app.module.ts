@@ -1,3 +1,5 @@
+import { TickService } from './tick.service';
+import { KeyboardService } from './game/Keyboard.service';
 import { CharacterComponent } from './game/character/character.component';
 import { GameService } from './game/game.service';
 import { MapService } from './game/map.service';
@@ -22,7 +24,9 @@ import { AppComponent } from './app.component';
   ],
   providers: [
       MapService,
-      GameService
+      GameService,
+      KeyboardService,
+      TickService
       
   ],
   bootstrap: [AppComponent]

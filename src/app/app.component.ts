@@ -1,3 +1,4 @@
+import { KeyboardService } from './game/Keyboard.service';
 import { GameService } from './game/game.service';
 import { MapService } from './game/map.service';
 import { Component } from '@angular/core';
@@ -11,7 +12,8 @@ export class AppComponent {
 
     constructor (
         public gameService:GameService,
-        public mapService:MapService
+        public mapService:MapService,
+        public keyboardService:KeyboardService
     ){
        
     }
