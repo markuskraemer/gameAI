@@ -1,3 +1,4 @@
+import { ConfigService } from './../config.service';
 import { IMapData } from './IMapData';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
@@ -6,7 +7,9 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class MapService {
 
-    public readonly tileSize:number = 25;
+    public get tileSize ():number {
+        return this.configService.tileSize;
+    }
     
     private mapJSON:any;
     private _loaded:boolean;
@@ -17,7 +20,8 @@ export class MapService {
 
 
     constructor(
-         private http: Http
+         private http: Http,
+         private configService:ConfigService
     ) {
         this.loadConfig ();
     }

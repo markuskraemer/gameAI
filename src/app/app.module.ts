@@ -1,3 +1,4 @@
+import { ConfigService } from './config.service';
 import { TickService } from './tick.service';
 import { KeyboardService } from './game/Keyboard.service';
 import { CharacterComponent } from './game/character/character.component';
@@ -26,7 +27,8 @@ import { AppComponent } from './app.component';
       MapService,
       GameService,
       KeyboardService,
-      TickService
+      TickService,
+      ConfigService
       
   ],
   bootstrap: [AppComponent]

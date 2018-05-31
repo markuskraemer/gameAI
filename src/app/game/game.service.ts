@@ -1,3 +1,4 @@
+import { ConfigService } from './../config.service';
 import { TickService } from './../tick.service';
 import { KeyboardService } from './Keyboard.service';
 import { MapService } from './map.service';
@@ -11,8 +12,6 @@ export class GameService {
 
     private _character:Character;
 
-   
-
     public get character ():Character {
         return this._character;
     }
@@ -20,7 +19,8 @@ export class GameService {
     constructor(
         private mapService:MapService,
         private keyboardService:KeyboardService,
-        private tickService:TickService
+        private tickService:TickService,
+        private configService:ConfigService
     ) {
         Alias.gameService = this;
         this.createPlayer ();
@@ -30,9 +30,9 @@ export class GameService {
      }
 
      private createPlayer ():void {
-        this._character = new Character (this, this.mapService);
-        this._character.x = 37.5;
-        this._character.y = 120;
+        this._character = new Character (this, this.mapService, this.configService);
+        this._character.x = 2 * this.mapService.tileSize;
+        this._character.y = 3 * this.mapService.tileSize;
      }
 
      private tick ():void {
