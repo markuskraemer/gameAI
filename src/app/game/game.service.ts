@@ -1,20 +1,22 @@
+import { UserCharacter } from './UserCharacter';
+import { AICharacter } from './AICharacter';
 import { ConfigService } from './../config.service';
 import { TickService } from './../tick.service';
 import { KeyboardService } from './Keyboard.service';
 import { MapService } from './map.service';
 import { Character } from './Character';
-import { Alias } from './../Alias';
 import { Injectable } from '@angular/core';
 import { Key } from 'ts-keycode-enum';
 
 @Injectable()
 export class GameService {
 
-    private _character:Character;
+    private _characters:Character[] = [];
 
-    public get character ():Character {
-        return this._character;
+    public get characters ():Character[] {
+        return this._characters;
     }
+
 
     constructor(
         private mapService:MapService,
@@ -22,32 +24,31 @@ export class GameService {
         private tickService:TickService,
         private configService:ConfigService
     ) {
-        Alias.gameService = this;
-        this.createPlayer ();
+        this.createCharacters ();
         this.tickService.tick.subscribe (()=>{
             this.tick ();
         })
      }
 
-     private createPlayer ():void {
-        this._character = new Character (this, this.mapService, this.configService);
-        this._character.x = 2 * this.mapService.tileSize;
-        this._character.y = 3 * this.mapService.tileSize;
+     private createCharacters ():void {
+
+        const character:Character = new UserCharacter (this, this.mapService, this.configService);
+        character.color = 'blue';
+        character.x = 1.5 * this.mapService.tileSize;
+        character.y = 3 * this.mapService.tileSize;
+       // this._characters.push(character);
+
+        const aiCharacter = new AICharacter (this, this.mapService, this.configService);
+        aiCharacter.x = 1.5 * this.mapService.tileSize;
+        aiCharacter.y = 3 * this.mapService.tileSize;
+        this._characters.push(aiCharacter);
      }
 
+
      private tick ():void {
-         if(this.keyboardService.isPressed(Key.W)){
-             this._character.moveForward ();
+         for(const character of this._characters){
+             character.tick ();
          }
-
-        if(this.keyboardService.isPressed(Key.A)){
-             this._character.rotateLeft ();
-         }
-
-        if(this.keyboardService.isPressed(Key.D)){
-             this._character.rotateRight ();
-         }
-
      }
 
    

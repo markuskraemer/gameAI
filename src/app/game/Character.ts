@@ -14,9 +14,17 @@ export class Character {
     public width:number = this.mapService.tileSize / 4;
     public height:number = this.mapService.tileSize / 2;
     public viewAngle:number = 0;
-
+    public color:string;
     constructor (protected gameService:GameService, protected mapService:MapService, protected configService:ConfigService){
 
+    }
+
+    public tick ():void {
+
+    }
+
+    public hasFeelers ():boolean {
+        return false;
     }
 
     public moveForward (factor:number = 1):void {

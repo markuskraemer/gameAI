@@ -1,9 +1,13 @@
 
 <div *ngIf="mapService.currentMap" class="game-container"> 
     <app-map class="game-layer" [mapData]="mapService.currentMap"></app-map>
-    <app-character class="game-layer" [character]="gameService.character"></app-character>
+    <app-character class="game-layer" [characters]="gameService.characters"></app-character>
 </div>
 <div>
-    {{gameService.character.x + '|' + gameService.character.y + '|' + gameService.character.viewAngle}}<br>
+    T: {{gameService.characters[0].feelerT.freeSpaceValue}}
+
+    TL: {{gameService.characters[0].feelerTL.freeSpaceValue}}
+    TR: {{gameService.characters[0].feelerTR.freeSpaceValue}}
+
     w: {{keyboardService.isPressed(87)}}
 </div>

@@ -1,3 +1,4 @@
+import { Alias } from './../Alias';
 import { ConfigService } from './../config.service';
 import { IMapData } from './IMapData';
 import { Injectable } from '@angular/core';
@@ -23,6 +24,7 @@ export class MapService {
          private http: Http,
          private configService:ConfigService
     ) {
+        Alias.mapService = this;
         this.loadConfig ();
     }
 

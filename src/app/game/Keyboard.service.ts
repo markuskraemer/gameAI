@@ -1,3 +1,4 @@
+import { Alias } from './../Alias';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class KeyboardService {
     private pressedKeys:any = {};
 
     constructor() { 
+        Alias.keyboardService = this;
         window.addEventListener('keydown', (event:KeyboardEvent) => {
             this.pressedKeys[event.keyCode] = true;
             const lambda:any = this.downLambdas[event.keyCode];
