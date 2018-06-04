@@ -1,10 +1,11 @@
+import { MathUtils } from './../../utils/MathUtils';
 import { Feeler } from './../Feeler';
 import { AICharacter } from './../AICharacter';
 import { MapService } from './../map.service';
 import { TickService } from './../../tick.service';
 import { GameService } from './../game.service';
-import { Character } from './../Character';
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Character, XY } from './../Character';
+import { Component, OnInit, Input, Output, ViewChild, ElementRef, HostListener, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-character',
@@ -15,6 +16,20 @@ export class CharacterComponent implements OnInit {
 
     private _characters:Character[];
     private  context:CanvasRenderingContext2D;
+    
+    @Output('selectCharacter')
+    public readonly selectCharacter:EventEmitter<Character> = new EventEmitter ();
+
+    @HostListener('click', ['$event']) 
+    private onClick(e:MouseEvent) {
+        console.log("onClick: ", e);
+        const character:Character = this.findCreatureByPosition (e.offsetX, e.offsetY);
+        if(character != null){
+            console.log("character _> ", character);
+            this.selectCharacter.emit (character);
+        }
+    }
+
     @ViewChild ('canvas')
     public canvas:ElementRef;
 
@@ -43,6 +58,18 @@ export class CharacterComponent implements OnInit {
         })
     }
 
+    private findCreatureByPosition (x:number, y:number){
+        for(const character of this._characters){
+            const local:XY = MathUtils.rotateXY (x, y, -character.viewAngle, character.x, character.y);
+            if(local.x >= character.x - character.width / 2 && local.x < character.x + character.width / 2 
+            &&  local.y >= character.y - character.height / 2 && local.y < character.y + character.height / 2){
+                return character;
+            }
+        }
+        return null;
+    }
+
+
     protected draw ():void {
         this.context = this.canvas.nativeElement.getContext ('2d'); 
         this.context.clearRect (0, 0, this.mapService.mapWidth, this.mapService.mapHeight);
@@ -50,8 +77,7 @@ export class CharacterComponent implements OnInit {
         for(const character of this._characters){
         this.context.save ();
 
-            this.context.fillStyle = character.color;
-
+            this.context.fillStyle = character.color.rgb ().toString ();
             this.context.translate (character.x, character.y);
             this.context.rotate (character.viewAngle);
             this.context.fillRect (-character.width/2, 

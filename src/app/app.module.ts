@@ -1,3 +1,10 @@
+import { FormatterService } from './utils/Formatter.service';
+import { CharacterPreviewComponent } from './ui/character-preview/character-preview.component';
+import { CharactersStorageListComponent } from './ui/characters-storage-list/characters-storage-list.component';
+import { DialogsComponent } from './ui/dialogs/dialogs.component';
+import { DialogService } from './ui/dialogs/dialog.service';
+import { StorageService } from './storage/storage.service';
+import { NeuralNetworkComponent } from './ui/neuralNetwork/neuralNetwork.component';
 import { ConfigService } from './config.service';
 import { TickService } from './tick.service';
 import { KeyboardService } from './game/Keyboard.service';
@@ -8,8 +15,6 @@ import { MapComponent } from './game/map/map.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
-
-
 import { AppComponent } from './app.component';
 
 
@@ -17,7 +22,11 @@ import { AppComponent } from './app.component';
   declarations: [
     AppComponent,
     MapComponent,
-    CharacterComponent
+    CharacterComponent,
+    NeuralNetworkComponent,
+    DialogsComponent,
+    CharactersStorageListComponent,
+    CharacterPreviewComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +37,10 @@ import { AppComponent } from './app.component';
       GameService,
       KeyboardService,
       TickService,
-      ConfigService
+      ConfigService,
+      StorageService,
+      DialogService,
+      FormatterService
       
   ],
   bootstrap: [AppComponent]

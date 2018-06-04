@@ -14,6 +14,7 @@ export class GameService {
     private _characters:Character[] = [];
     public bestGrade:number = 2;
     public bestGradeCharacter:AICharacter;
+    public inspectedCharacter:AICharacter;
 
     public get characters ():Character[] {
         return this._characters;
@@ -31,10 +32,13 @@ export class GameService {
         })
      }
 
+     public loadAndAddCharacter (id:string):void {
+         console.log("loadAndAddCharacter: ", id);
+     }
+
      private createCharacters ():void {
 
         const character:Character = new UserCharacter (this, this.mapService, this.configService);
-        character.color = 'blue';
         character.x = 1.5 * this.mapService.tileSize;
         character.y = 3 * this.mapService.tileSize;
        // this._characters.push(character);
@@ -70,7 +74,7 @@ export class GameService {
      private placeAtAllowedPoint(character:Character){
         character.x = 1.5 * this.mapService.tileSize;
         character.y = (8 + this.characters.length % 4) * this.mapService.tileSize;
-        character.color = '#' + this.generateRandomColor (this.characters.length).toString (16);
+       // character.color = '#' + this.generateRandomColor (this.characters.length).toString (16);
         
      }
 

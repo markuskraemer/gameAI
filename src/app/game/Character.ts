@@ -1,7 +1,9 @@
+
 import { MapService } from './map.service';
 import { GameService } from './game.service';
 import { ConfigService } from './../config.service';
 import { MathUtils } from './../utils/MathUtils';
+import * as Color from 'color';
 
 export interface XY {
     x:number;
@@ -9,15 +11,24 @@ export interface XY {
 }
 
 export class Character {
+
+    protected static colorHueRotation:number = 0;
+
     public x:number = 0;
     public y:number = 0;
     public width:number = this.mapService.tileSize / 4;
     public height:number = this.mapService.tileSize / 2;
     public viewAngle:number = 0;
-    public color:string;
-    constructor (protected gameService:GameService, protected mapService:MapService, protected configService:ConfigService){
+    public color:Color;
+    public id:number;
 
+    constructor (protected gameService:GameService, protected mapService:MapService, protected configService:ConfigService){
+        this.id = new Date().getTime ();
+        this.color = new Color (0xff0000);
+        this.color.rotate (Character.colorHueRotation);
+        Character.colorHueRotation += 37;
     }
+
 
     public tick ():void {
 

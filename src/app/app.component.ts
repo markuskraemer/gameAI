@@ -1,3 +1,5 @@
+import { DialogService } from './ui/dialogs/dialog.service';
+import { StorageService } from './storage/storage.service';
 import { KeyboardService } from './game/Keyboard.service';
 import { GameService } from './game/game.service';
 import { MapService } from './game/map.service';
@@ -12,7 +14,9 @@ export class AppComponent {
     constructor (
         public gameService:GameService,
         public mapService:MapService,
-        public keyboardService:KeyboardService
+        public keyboardService:KeyboardService,
+        public storageService:StorageService,
+        public dialogService:DialogService
     ){
     }
 

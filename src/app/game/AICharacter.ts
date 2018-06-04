@@ -55,6 +55,11 @@ export class AICharacter extends Character{
 
     }
 
+
+    public static fromJSON (json:JSON):AICharacter{
+        return null;
+    }
+
     public copy ():AICharacter {
         const other:AICharacter = new AICharacter (this.gameService, this.mapService, this.configService, false);
         other.brain.copyFrom (this.brain);
@@ -80,18 +85,18 @@ export class AICharacter extends Character{
 
     public tick ():void {
         
-        this.updateFeelersAndInputs ();
+        // this.updateFeelersAndInputs ();
         
-        this.moveForward (MathUtils.clamp01 (this.outForward.output));
-        this.rotate (MathUtils.clampNegPos (this.outRotate.output));
+       // this.moveForward (MathUtils.clamp01 (this.outForward.output));
+       // this.rotate (MathUtils.clampNegPos (this.outRotate.output));
 
         this.checkKeyboard ();
 
         if(!this.checkPoints (this.x, this.y, this.viewAngle)){
-             this.gameService.removeCharacter(this);
+       //      this.gameService.removeCharacter(this);
         }
 
-        this.evaluteWalking ();
+       // this.evaluteWalking ();
     }
 
     private evaluteWalking ():void {
