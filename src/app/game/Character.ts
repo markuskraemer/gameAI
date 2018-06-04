@@ -31,12 +31,8 @@ export class Character {
 
         const newX:number = this.x + Math.sin(this.viewAngle) * this.configService.speed * factor;
         const newY:number = this.y - Math.cos(this.viewAngle) * this.configService.speed * factor;
-
-        if(this.checkPoints (newX, newY, this.viewAngle)){
-            this.x = newX;
-            this.y = newY;
-        }
-
+        this.x = newX;
+        this.y = newY;
     }
 
     public rotateLeft (factor:number = 1):void {
@@ -51,7 +47,7 @@ export class Character {
         this.viewAngle += Math.PI / 180 * this.configService.radPerRotation * factor;
     }
 
-    private checkPoints (x:number, y:number, viewAngle:number):boolean {
+    protected checkPoints (x:number, y:number, viewAngle:number):boolean {
         const TL:XY = MathUtils.rotateXY (-this.width/2, -this.height/2, viewAngle, 0, 0);
         const TR:XY = MathUtils.rotateXY ( this.width/2, -this.height/2, viewAngle, 0, 0);
     //    const BR:{x:number, y:number} = MathUtils.rotateXY ( this.width/2,  this.height/2, viewAngle, 0, 0);

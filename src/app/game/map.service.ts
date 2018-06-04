@@ -31,7 +31,7 @@ export class MapService {
   private loadConfig(): void {
         this._loaded = false;
         this.http
-            .get('assets/maps/map.json')
+            .get('assets/maps/map2.json')
             .map((res: Response) => res.json())
             .subscribe((data: any) => {
                 this.mapJSON = data;   
@@ -58,10 +58,17 @@ export class MapService {
      }
 
      public getTileAt (x:number, y:number):number {
-         const r:number = Math.floor(x / this.tileSize);
-         const c:number = Math.floor(y / this.tileSize);
-         const index:number = c * this.currentMap.width + r;
+         const index:number = this.yToRow(y) * this.currentMap.width + this.xToCol(x);;
          return this.currentMap.data[index];
      }
+
+     public xToCol (x:number):number {
+        return Math.floor(x / this.tileSize);
+     }
+
+     public yToRow (y:number):number {
+        return Math.floor(y / this.tileSize);
+     }
+
 
 }

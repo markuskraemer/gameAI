@@ -48,6 +48,15 @@ export class NeuralNetwork {
         }        
     }
 
+    public copyFrom (other:NeuralNetwork):void {
+        for(let i:number = 0; i < this._outputLayer.length; ++i){
+           for(let j:number = 0; j < this._outputLayer[i].connections.length; ++j){
+                const connection:Connection = this._outputLayer[i].connections[j];
+                connection.weight = other._outputLayer[i].connections[j].weight; 
+            }
+        }
+    }
+
     public randomizeAnyConnection (f:number):void {
         const index1:number = Math.floor (Math.random () * this.outputLayer.length);
         const neuron:WorkingNeuron = this.outputLayer[index1];

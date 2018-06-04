@@ -4,10 +4,6 @@
     <app-character class="game-layer" [characters]="gameService.characters"></app-character>
 </div>
 <div>
-    T: {{gameService.characters[0].feelerT.freeSpaceValue}}
-
-    TL: {{gameService.characters[0].feelerTL.freeSpaceValue}}
-    TR: {{gameService.characters[0].feelerTR.freeSpaceValue}}
-
-    w: {{keyboardService.isPressed(87)}}
+    bestGrade:{{gameService.bestGrade}}<br>
+    num Chars:{{gameService.characters.length}}<br>
 </div>

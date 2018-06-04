@@ -7,6 +7,8 @@ export class ConfigService {
 
     public readonly tileSize:number = 40;
     public readonly radPerRotation:number = 4;
-    public readonly speed:number = 2;
+    public readonly speed:number = 1;
+    public readonly fps:number = 120;
+    public readonly characterCount:number = 60;
 
 }

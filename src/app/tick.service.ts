@@ -1,3 +1,4 @@
+import { ConfigService } from './config.service';
 import { Injectable, EventEmitter } from '@angular/core';
 
 @Injectable()
@@ -33,7 +34,10 @@ export class TickService {
         return 1000 / this._speed;
     }
 
-    constructor() {
+    constructor(
+        private configService:ConfigService
+    ) {
+        this._speed = configService.fps;
         this.start ();
      }
 
