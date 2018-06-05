@@ -1,3 +1,4 @@
+import { StorageService } from './../storage/storage.service';
 import { Alias } from './../Alias';
 import { UserCharacter } from './UserCharacter';
 import { AICharacter } from './AICharacter';
@@ -5,7 +6,7 @@ import { ConfigService } from './../config.service';
 import { TickService } from './../tick.service';
 import { KeyboardService } from './Keyboard.service';
 import { MapService } from './map.service';
-import { Character } from './Character';
+import { Character, XY } from './Character';
 import { Injectable } from '@angular/core';
 import { Key } from 'ts-keycode-enum';
 
@@ -25,7 +26,8 @@ export class GameService {
         private mapService:MapService,
         private keyboardService:KeyboardService,
         private tickService:TickService,
-        private configService:ConfigService
+        private configService:ConfigService,
+        private storageService:StorageService
     ) {
         Alias.gameService = this;
         this.createCharacters ();
@@ -34,8 +36,9 @@ export class GameService {
         })
      }
 
-     public loadAndAddCharacter (id:string):void {
-         console.log("loadAndAddCharacter: ", id);
+     public addNewCharacter (character:Character):void {
+        this.addCharacter(character);
+        this.placeAtAllowedPoint(character);
      }
 
      private createCharacters ():void {
@@ -73,14 +76,14 @@ export class GameService {
         return aiCharacter;
      }
 
-     private placeAtAllowedPoint(character:Character){
+     public placeAtAllowedPoint(character:Character){
         character.x = 1.5 * this.mapService.tileSize;
         character.y = (8 + this.characters.length % 4) * this.mapService.tileSize;
        // character.color = '#' + this.generateRandomColor (this.characters.length).toString (16);
         
      }
 
-     private addCharacter (character:Character):void {
+     public addCharacter (character:Character):void {
         this._characters.push(character);
      }
  
@@ -110,16 +113,21 @@ export class GameService {
 
      public removeCharacter (character:AICharacter):void {
         // console.log("removeCharacter : ", character);
-
-         const index:number = this._characters.indexOf(character);
-         this._characters.splice(index, 1);
-         this.updateBestGrade ();
+        this.updateBestGrade ();
+        const index:number = this._characters.indexOf(character);
+        this._characters.splice(index, 1);
+         
         if(Math.random () > .2 && this.bestGradeCharacter != undefined){
 
             const newCharacter2:AICharacter = this.bestGradeCharacter.copy ();
             newCharacter2.randomize ();
             this.addCharacter (newCharacter2);
-            this.placeAtAllowedPoint (newCharacter2);
+
+            if(newCharacter2.walkedTiles.length > 2){
+                newCharacter2.goBack (1);
+            }else{
+                 this.placeAtAllowedPoint (newCharacter2);
+            }
          }else{
             if(this._characters.length < this.configService.characterCount){
                 const newCharacter = this.createAICharacter ();

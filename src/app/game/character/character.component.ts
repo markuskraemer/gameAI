@@ -96,11 +96,9 @@ export class CharacterComponent implements OnInit {
 
 
     private drawFeelers (character:AICharacter):void {
-        this.drawFeeler (character.feelerTL);
-        this.drawFeeler (character.feelerTR);
-        this.drawFeeler (character.feelerML);
-        this.drawFeeler (character.feelerMR);
-        this.drawFeeler (character.feelerT);
+        for(const feeler of character.feelers){
+            this.drawFeeler(feeler);
+        }
     }
 
     private drawFeeler (feeler:Feeler):void {

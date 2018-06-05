@@ -26,7 +26,7 @@ export class Character {
     constructor (){
         this.id = new Date().getTime ();
         this.color = new Color (0xff0000);
-        this.color.rotate (Character.colorHueRotation);
+        this.color = this.color.rotate (Character.colorHueRotation);
         Character.colorHueRotation += 37;
     }
 

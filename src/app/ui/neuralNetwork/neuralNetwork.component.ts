@@ -16,7 +16,7 @@ export class NeuralNetworkComponent implements OnInit {
     @Input('network')
     public set network (n:NeuralNetwork) {
         this._network = n;
-        this.infoConnections.length = 0;
+        // this.infoConnections.length = 0;
         this.determineContext ();
         requestAnimationFrame ( () => this.draw ());
         this.draw (); 
@@ -29,7 +29,7 @@ export class NeuralNetworkComponent implements OnInit {
     @ViewChild ('canvas')
     public canvas:ElementRef;
 
-    private infoConnections:Connection [] = [];
+    private infoConnectionNames:string [] = [];
     private marginTopBottom:number = 20;
     private context:CanvasRenderingContext2D;
     private width:number;
@@ -156,7 +156,7 @@ export class NeuralNetworkComponent implements OnInit {
                 const endX:number = this.getOutputNeuronX (i);
                 const endY:number = this.getOutputNeuronY (i);
 
-                const drawInfo:boolean = this.infoConnections.indexOf (connection) >= 0; 
+                const drawInfo:boolean = this.infoConnectionNames.indexOf (connection.id) >= 0; 
 
                 this.context.lineWidth = drawInfo ? 3 : 1;
             
@@ -222,12 +222,12 @@ export class NeuralNetworkComponent implements OnInit {
         this.hideAllConnectionInfos ();
         if(neuron != null){
             for(const connection of neuron.connections){
-                this.showConnectionInfo (connection);
+                this.showConnectionInfo (connection.id);
             }
         }else{
             const connection:Connection = this.getConnetionUnderPoint (event.offsetX, event.offsetY);
             if(connection != null){
-                this.showConnectionInfo (connection);
+                this.showConnectionInfo (connection.id);
             }else{
                 
             }
@@ -240,7 +240,7 @@ export class NeuralNetworkComponent implements OnInit {
         
         for(let outIndex:number = 0; outIndex < this._network.outputLayer.length; ++outIndex){
             const outX:number = this.getOutputNeuronX(outIndex);
-            const outY:number = this.getInputNeuronY(outIndex);
+            const outY:number = this.getOutputNeuronY(outIndex);
     
             const outNeuron:WorkingNeuron = this._network.outputLayer[outIndex];
 
@@ -262,7 +262,7 @@ export class NeuralNetworkComponent implements OnInit {
     private getOutputNeuronUnderPoint (x:number, y:number):WorkingNeuron {
         
         for(let i:number = 0; i < this._network.outputLayer.length; ++i){
-            if(MathUtils.distance (this.getOutputNeuronX (i), this.getInputNeuronY(i), x, y) < this.radius){
+            if(MathUtils.distance (this.getOutputNeuronX (i), this.getOutputNeuronY(i), x, y) < this.radius){
                 return this._network.outputLayer[i];
             }
         }
@@ -270,15 +270,15 @@ export class NeuralNetworkComponent implements OnInit {
     }
 
 
-    private showConnectionInfo (connection:Connection):void {
-        console.log("connectionInfo: ", connection);
-        if(this.infoConnections.indexOf(connection) == -1){
-            this.infoConnections.push(connection);
+    private showConnectionInfo (connectionName:string):void {
+        console.log("connectionInfo: ", connectionName);
+        if(this.infoConnectionNames.indexOf(connectionName) == -1){
+            this.infoConnectionNames.push(connectionName);
         }
     }
 
     private hideAllConnectionInfos ():void {
         console.log("hideAllConnectionInfos");
-        this.infoConnections.length = 0;
+        this.infoConnectionNames.length = 0;
     }
 }

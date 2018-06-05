@@ -1,11 +1,12 @@
-
+<div id="stats"></div>
 <div *ngIf="mapService.currentMap" class="game-container"> 
     <app-map class="game-layer" [mapData]="mapService.currentMap"></app-map>
     <app-character class="game-layer" [characters]="gameService.characters" (selectCharacter)="gameService.inspectedCharacter=$event"></app-character>
 </div>
 <div>
     bestGrade:{{gameService.bestGrade}}<br>
-    num Chars:{{gameService.characters.length}}<br>
+    num Chars:{{gameService.characters.length}}<br>    
+    Ticks:{{tickService.ticks}} | Time:{{ formatterService.toDuration(tickService.ticks) }}
 </div>
 <div class="ui">
     <input type="button" value="load..." (click)="dialogService.openStorageList()">

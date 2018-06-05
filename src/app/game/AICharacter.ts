@@ -29,8 +29,8 @@ export class AICharacter extends Character{
     public brain:NeuralNetwork;
     public inTL:InputNeuron;
     public inTR:InputNeuron;
-    public inML:InputNeuron;
-    public inMR:InputNeuron;
+    //public inML:InputNeuron;
+    //public inMR:InputNeuron;
     public inT:InputNeuron;
 
     public outForward:WorkingNeuron;
@@ -38,9 +38,11 @@ export class AICharacter extends Character{
 
     public feelerTL:Feeler;
     public feelerTR:Feeler;
-    public feelerML:Feeler;
-    public feelerMR:Feeler;
+    //public feelerML:Feeler;
+    //public feelerMR:Feeler;
     public feelerT:Feeler;
+
+    public feelers:Feeler[] = [];
 
     public walkedTiles:XY[] = [];
     private ticksOnSameTile:number = 0;
@@ -71,8 +73,8 @@ export class AICharacter extends Character{
         this.inT = InputNeuron.fromJSON (json['inT']);
         this.inTL = InputNeuron.fromJSON (json['inTL']);
         this.inTR = InputNeuron.fromJSON (json['inTR']);
-        this.inML = InputNeuron.fromJSON (json['inML']);
-        this.inMR = InputNeuron.fromJSON (json['inMR']);
+        //this.inML = InputNeuron.fromJSON (json['inML']);
+        //this.inMR = InputNeuron.fromJSON (json['inMR']);
 
         this.outForward = WorkingNeuron.fromJSON(json['outForward']);
         this.outRotate = WorkingNeuron.fromJSON(json['outRotate']);
@@ -87,16 +89,13 @@ export class AICharacter extends Character{
         const other:AICharacter = new AICharacter (false);
         other.createNeurons ();
         other.createBrain ();
+        other.walkedTiles = this.walkedTiles.slice (this.walkedTiles.length-4);
+        other.viewAngle = this.viewAngle;
         other.brain.generateMesh ();
         other.brain.setConnectionTargets ();
         other.brain.copyWeightsFrom (this.brain);
         
         return other;
-    }
-
-    public reset ():AICharacter {
-        this.walkedTiles.length = 0; 
-        return this;
     }
 
     public randomize ():void {
@@ -125,6 +124,18 @@ export class AICharacter extends Character{
         }
 
         this.evaluteWalking ();
+    }
+
+    public goBack (steps:number):void {
+        steps = Math.min(this.walkedTiles.length, steps);
+        while(steps-- > 0){
+            this.walkedTiles.pop ();
+        }
+        if(this.walkedTiles.length > 0){
+            const tileXY:XY = this.walkedTiles[this.walkedTiles.length-1];
+            this.x = (tileXY.x + .5) * Alias.configService.tileSize;
+            this.y = (tileXY.y + .5) * Alias.configService.tileSize;
+        }
     }
 
     private evaluteWalking ():void {
@@ -173,8 +184,8 @@ export class AICharacter extends Character{
 
         this.brain.addInputNeuron (this.inTL);
         this.brain.addInputNeuron (this.inTR);
-        this.brain.addInputNeuron (this.inML);
-        this.brain.addInputNeuron (this.inMR);
+       // this.brain.addInputNeuron (this.inML);
+       // this.brain.addInputNeuron (this.inMR);
         this.brain.addInputNeuron (this.inT);
 
         this.brain.addOutputNeuron (this.outForward);
@@ -184,33 +195,33 @@ export class AICharacter extends Character{
     private createNeurons ():void {
         this.inTL = new InputNeuron (NeuronIds.TL);
         this.inTR = new InputNeuron (NeuronIds.TR);
-        this.inML = new InputNeuron (NeuronIds.ML);
-        this.inMR = new InputNeuron (NeuronIds.MR);
+        //this.inML = new InputNeuron (NeuronIds.ML);
+        //this.inMR = new InputNeuron (NeuronIds.MR);
         this.inT = new InputNeuron (NeuronIds.T);
         this.outForward = new WorkingNeuron (NeuronIds.Forward);
         this.outRotate = new WorkingNeuron (NeuronIds.Rotate);
     }
 
     private createFeelers ():void {
+        this.feelerT = new Feeler (0, 0, 0, -this.feelerDist*1.5);
         this.feelerTL = new Feeler (0, 0, -this.feelerDist, -this.feelerDist);
         this.feelerTR = new Feeler (0, 0, this.feelerDist, -this.feelerDist);
-        this.feelerML = new Feeler (0, 0, -this.feelerDist, 0);
-        this.feelerMR = new Feeler (0, 0, this.feelerDist, 0);
-        this.feelerT = new Feeler (0, 0, 0, -this.feelerDist*1.5);
+        //this.feelerML = new Feeler (0, 0, -this.feelerDist, 0);
+        //this.feelerMR = new Feeler (0, 0, this.feelerDist, 0);
+        
+        this.feelers.push (this.feelerT, this.feelerTL, this.feelerTR);
     }
 
     private updateFeelersAndInputs ():void {
         
-        this.updateFeeler (this.feelerTL);
-        this.updateFeeler (this.feelerTR);
-        this.updateFeeler (this.feelerML);
-        this.updateFeeler (this.feelerMR);
-        this.updateFeeler (this.feelerT);
+        for(const feeler of this.feelers){
+            this.updateFeeler(feeler);
+        }
 
         this.inTL.input = this.feelerTL.freeSpaceValue;
         this.inTR.input = this.feelerTR.freeSpaceValue;
-        this.inML.input = this.feelerML.freeSpaceValue;
-        this.inMR.input = this.feelerMR.freeSpaceValue;
+        //this.inML.input = this.feelerML.freeSpaceValue;
+        //this.inMR.input = this.feelerMR.freeSpaceValue;
         this.inT.input = this.feelerT.freeSpaceValue;
     }   
 

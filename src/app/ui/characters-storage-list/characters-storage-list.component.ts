@@ -37,8 +37,8 @@ export class CharactersStorageListComponent implements OnInit {
         })
     }
 
-    public handleLoadClick (item:IStorageDescribtion):void {
-        this.gameService.loadAndAddCharacter(item.id);
+    public handleLoadClick (json:JSON):void {
+        this.gameService.addNewCharacter(this.getCharacter(json));
     }
 
     public handleDeleteClick(item:IStorageDescribtion):void {

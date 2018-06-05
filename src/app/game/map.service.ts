@@ -31,7 +31,7 @@ export class MapService {
   private loadConfig(): void {
         this._loaded = false;
         this.http
-            .get('assets/maps/map2.json')
+            .get('assets/maps/map.json')
             .map((res: Response) => res.json())
             .subscribe((data: any) => {
                 this.mapJSON = data;   

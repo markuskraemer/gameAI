@@ -27,6 +27,7 @@ export class NeuralNetwork {
             for(const inputNeuron of this._inputLayer){
                 const connection:Connection = new Connection ();
                 outputNeuron.addConnection (connection);
+                connection.id = outputNeuron.id + "_" + inputNeuron.id;
             }
         }
     }
@@ -64,7 +65,7 @@ export class NeuralNetwork {
         const neuron:WorkingNeuron = this.outputLayer[index1];
         const index2:number = Math.floor (Math.random () * neuron.connections.length);
         const connection:Connection = neuron.connections[index2];
-        connection.weight += Math.random () * f * 2 - f;
+        connection.weight = Math.random () * 2 - 1;
     }
 
 
