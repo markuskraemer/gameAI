@@ -7,27 +7,56 @@ import { Injectable } from '@angular/core';
 export class StorageService {
 
     private key:string = 'characters';
+    private storedList:IStorageDescribtion[];
+    private isDirty:boolean;
 
     constructor() { }
 
     public load (id:string):string {
-        const list = JSON.parse(localStorage.getItem(this.key));
-        return list[id];
+        const item = this.getItem(id);
+        return item ? item.o : null;        
     }
 
+    private getItem (id:string):any {
+        const list = this.getFileList ();
+        return list.find ((item) => {
+            return item.id == id;
+        });        
+    }
+
+    private getItemIndex (id:string):number {
+        const list = this.getFileList ();
+        return list.findIndex ((item) => {
+            return item.id == id;
+        });        
+    }
+
+
     public delete (id:string):void {
-        const list = JSON.parse(localStorage.getItem(this.key));
-        list[id] = null;
-        localStorage.setItem(this.key, JSON.stringify(list));
+        const itemIndex:number = this.getItemIndex(id);
+        if(itemIndex >= 0){
+            const list = this.getFileList ();
+            list.splice(itemIndex, 1);
+            localStorage.setItem(this.key, JSON.stringify(list));                    
+            this.isDirty = true;
+        }
     }
 
     public save (o:IStorable):void {
-        const list = JSON.parse(localStorage.getItem(this.key));
-        list[o.id] = JSON.stringify(o);
+        this.delete(o.id);
+        const list = this.getFileList ();
+        list.push ({id:o.id, o:o, time:new Date().getTime()});
         localStorage.setItem(this.key, JSON.stringify(list));
+        this.isDirty = true;
+
     }
 
-    public getFileDescribtions ():IStorageDescribtion []{
-        return [];
+    public getFileList ():IStorageDescribtion []{
+        if(this.isDirty || this.storedList == null){
+            const s = localStorage.getItem(this.key);
+            this.storedList = JSON.parse(s) || [];
+            this.isDirty = false;
+        }
+        return this.storedList;
     }
 }

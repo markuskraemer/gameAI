@@ -1,3 +1,4 @@
+import { Alias } from './../Alias';
 import { UserCharacter } from './UserCharacter';
 import { AICharacter } from './AICharacter';
 import { ConfigService } from './../config.service';
@@ -26,6 +27,7 @@ export class GameService {
         private tickService:TickService,
         private configService:ConfigService
     ) {
+        Alias.gameService = this;
         this.createCharacters ();
         this.tickService.tick.subscribe (()=>{
             this.tick ();

@@ -113,18 +113,18 @@ export class AICharacter extends Character{
 
     public tick ():void {
         
-        // this.updateFeelersAndInputs ();
+         this.updateFeelersAndInputs ();
         
-       // this.moveForward (MathUtils.clamp01 (this.outForward.output));
-       // this.rotate (MathUtils.clampNegPos (this.outRotate.output));
+        this.moveForward (MathUtils.clamp01 (this.outForward.output));
+        this.rotate (MathUtils.clampNegPos (this.outRotate.output));
 
         this.checkKeyboard ();
 
         if(!this.checkPoints (this.x, this.y, this.viewAngle)){
-       //      this.gameService.removeCharacter(this);
+             Alias.gameService.removeCharacter(this);
         }
 
-       // this.evaluteWalking ();
+        this.evaluteWalking ();
     }
 
     private evaluteWalking ():void {

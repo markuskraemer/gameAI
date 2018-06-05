@@ -45,11 +45,11 @@ export class CharactersStorageListComponent implements OnInit {
         this.storageService.delete(item.id);
     } 
 
-    public handlePreviewClick (jsonString:string) {
-        this.gameService.inspectedCharacter = this.getCharacter(jsonString);
+    public handlePreviewClick (json:JSON) {
+         this.gameService.inspectedCharacter = this.getCharacter(json);
     }
 
-    public getCharacter (jsonString:string){
-        return AICharacter.fromJSON (JSON.parse(jsonString));
+    public getCharacter (json:JSON){
+        return AICharacter.fromJSON (json);
     }
 }
