@@ -9,6 +9,7 @@ import { ConfigService } from './../config.service';
 import { MapService } from './map.service';
 import { GameService } from './game.service';
 import { Character, XY } from './Character';
+import * as Color from 'color';
 
 
 export enum NeuronIds {
@@ -44,25 +45,52 @@ export class AICharacter extends Character{
     public walkedTiles:XY[] = [];
     private ticksOnSameTile:number = 0;
     
-    constructor (protected gameService:GameService, protected mapService:MapService, protected configService:ConfigService, selfInit:boolean = true){
-        super(gameService, mapService, configService);
-        this.createBrain ();
-        this.createFeelers ();
-
-        if(selfInit){
+    constructor (selfInit:boolean = true){
+        super();
+        if(selfInit) {
+            this.createNeurons ();
+            this.createBrain ();
+            this.brain.generateMesh ();
+            this.brain.setConnectionTargets ();
             this.brain.randomizeWeights ();
         }
+
+        this.createFeelers ();
 
     }
 
 
     public static fromJSON (json:JSON):AICharacter{
-        return null;
+        const character:AICharacter = new AICharacter (false);
+        character.createBrainFromJSON (json);
+        return character;
     }
 
+    private createBrainFromJSON (json:any):void {
+
+        this.inT = InputNeuron.fromJSON (json['inT']);
+        this.inTL = InputNeuron.fromJSON (json['inTL']);
+        this.inTR = InputNeuron.fromJSON (json['inTR']);
+        this.inML = InputNeuron.fromJSON (json['inML']);
+        this.inMR = InputNeuron.fromJSON (json['inMR']);
+
+        this.outForward = WorkingNeuron.fromJSON(json['outForward']);
+        this.outRotate = WorkingNeuron.fromJSON(json['outRotate']);
+
+        this.color = new Color(json['color'].color);
+        this.createBrain ();
+        this.brain.setConnectionTargets (); 
+    }
+
+
     public copy ():AICharacter {
-        const other:AICharacter = new AICharacter (this.gameService, this.mapService, this.configService, false);
-        other.brain.copyFrom (this.brain);
+        const other:AICharacter = new AICharacter (false);
+        other.createNeurons ();
+        other.createBrain ();
+        other.brain.generateMesh ();
+        other.brain.setConnectionTargets ();
+        other.brain.copyWeightsFrom (this.brain);
+        
         return other;
     }
 
@@ -101,8 +129,8 @@ export class AICharacter extends Character{
 
     private evaluteWalking ():void {
         const lastTile:XY = this.walkedTiles[this.walkedTiles.length-1];
-        const nowCol:number = this.mapService.xToCol(this.x);
-        const nowRow:number = this.mapService.yToRow(this.y);
+        const nowCol:number = Alias.mapService.xToCol(this.x);
+        const nowRow:number = Alias.mapService.yToRow(this.y);
         if(lastTile == null){
             this.walkedTiles.push({x:nowCol, y:nowRow});
         }else{
@@ -119,7 +147,7 @@ export class AICharacter extends Character{
             }else{
                 ++this.ticksOnSameTile;
                 if(this.ticksOnSameTile == 60){
-                    this.gameService.removeCharacter (this);
+                    Alias.gameService.removeCharacter (this);
                 }
             }
         }
@@ -140,13 +168,8 @@ export class AICharacter extends Character{
     }
 
     private createBrain ():void {
-        this.brain = new NeuralNetwork ();
 
-        this.inTL = new InputNeuron (NeuronIds.TL);
-        this.inTR = new InputNeuron (NeuronIds.TR);
-        this.inML = new InputNeuron (NeuronIds.ML);
-        this.inMR = new InputNeuron (NeuronIds.MR);
-        this.inT = new InputNeuron (NeuronIds.T);
+        this.brain = new NeuralNetwork ();
 
         this.brain.addInputNeuron (this.inTL);
         this.brain.addInputNeuron (this.inTR);
@@ -154,16 +177,18 @@ export class AICharacter extends Character{
         this.brain.addInputNeuron (this.inMR);
         this.brain.addInputNeuron (this.inT);
 
-
-        this.outForward = new WorkingNeuron (NeuronIds.Forward);
-        this.outRotate = new WorkingNeuron (NeuronIds.Rotate);
-
         this.brain.addOutputNeuron (this.outForward);
         this.brain.addOutputNeuron (this.outRotate);
+    }
 
-        this.brain.generateMesh ();
-        this.brain.setConnectionTargets ();
-
+    private createNeurons ():void {
+        this.inTL = new InputNeuron (NeuronIds.TL);
+        this.inTR = new InputNeuron (NeuronIds.TR);
+        this.inML = new InputNeuron (NeuronIds.ML);
+        this.inMR = new InputNeuron (NeuronIds.MR);
+        this.inT = new InputNeuron (NeuronIds.T);
+        this.outForward = new WorkingNeuron (NeuronIds.Forward);
+        this.outRotate = new WorkingNeuron (NeuronIds.Rotate);
     }
 
     private createFeelers ():void {
@@ -200,7 +225,7 @@ export class AICharacter extends Character{
 
     private checkPointIsOnWall (distX:number, distY:number):boolean {
         const p:XY = MathUtils.rotateXY (distX, distY, this.viewAngle, 0, 0);
-        if(this.mapService.getTileAt (this.x + p.x, this.y + p.y) == 0) {
+        if(Alias.mapService.getTileAt (this.x + p.x, this.y + p.y) == 0) {
             return true;
         }else{
             return false;

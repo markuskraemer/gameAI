@@ -38,7 +38,7 @@ export class GameService {
 
      private createCharacters ():void {
 
-        const character:Character = new UserCharacter (this, this.mapService, this.configService);
+        const character:Character = new UserCharacter ();
         character.x = 1.5 * this.mapService.tileSize;
         character.y = 3 * this.mapService.tileSize;
        // this._characters.push(character);
@@ -66,7 +66,7 @@ export class GameService {
      }
 
      private createAICharacter ():AICharacter {
-        const aiCharacter = new AICharacter (this, this.mapService, this.configService);
+        const aiCharacter = new AICharacter ();
         this.addCharacter(aiCharacter);
         return aiCharacter;
      }

@@ -7,7 +7,7 @@ export class InputNeuron extends Neuron
     public static fromJSON (json:JSON):InputNeuron {
         const inputNeuron:InputNeuron = new InputNeuron (json['id']);
         inputNeuron.input = json['input'];
-        inputNeuron._input = json['_input'];
+      //  inputNeuron._input = json['_input'];
         return inputNeuron;        
     }
 

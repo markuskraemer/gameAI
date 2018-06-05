@@ -48,7 +48,9 @@ export class NeuralNetwork {
         }        
     }
 
-    public copyFrom (other:NeuralNetwork):void {
+    public copyWeightsFrom (other:NeuralNetwork):void {
+
+
         for(let i:number = 0; i < this._outputLayer.length; ++i){
            for(let j:number = 0; j < this._outputLayer[i].connections.length; ++j){
                 const connection:Connection = this._outputLayer[i].connections[j];
