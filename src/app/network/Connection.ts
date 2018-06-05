@@ -10,6 +10,7 @@ export class Connection
     public static fromJSON (json:any):Connection {
         const connection:Connection = new Connection ();
         connection.weight = json['weight'];
+        connection.id = json['id'];
         return connection;
     }
     
@@ -23,7 +24,7 @@ export class Connection
     }
 
     public toJSON ():any {
-        let { weight } = this;
-        return { weight };
+        let { weight, id } = this;
+        return { weight, id };
     }
 }

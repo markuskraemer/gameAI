@@ -1,9 +1,14 @@
 import { Connection } from './Connection';
 import { WorkingNeuron } from './WorkingNeuron';
 import { InputNeuron } from './InputNeuron';
+import { Neuron } from './Neuron';
+
 export class NeuralNetwork {
 
+    private layers:Neuron[][] = [[]];
+
     private _inputLayer:InputNeuron[] = [];
+    private _hiddenLayer:WorkingNeuron[] = [];
     private _outputLayer:WorkingNeuron[] = [];
 
     public get inputLayer ():InputNeuron[] {
@@ -14,8 +19,24 @@ export class NeuralNetwork {
         return this._outputLayer;
     }
 
+    public get hiddenLayer ():WorkingNeuron[] {
+        return this._hiddenLayer;
+    }
+
     public addInputNeuron (inputNeuron:InputNeuron):void {
         this._inputLayer.push(inputNeuron);
+    }
+
+    public addHiddentNeuron (hiddenNeuron:WorkingNeuron):void {
+        this._hiddenLayer.push (hiddenNeuron);
+    }
+
+    public setHiddenNeuronCount (count:number):void {
+        this._hiddenLayer.length = 0;
+        while(count-- > 0){
+            const hiddenNeuron:WorkingNeuron = new WorkingNeuron ('hidden_' + this._hiddenLayer.length);
+            this.addHiddentNeuron(hiddenNeuron);
+        }
     }
 
     public addOutputNeuron (outputNeuron:WorkingNeuron):void {

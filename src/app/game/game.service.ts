@@ -117,7 +117,7 @@ export class GameService {
         const index:number = this._characters.indexOf(character);
         this._characters.splice(index, 1);
          
-        if(Math.random () > .2 && this.bestGradeCharacter != undefined){
+        if(Math.random () > .4 && this.bestGradeCharacter != undefined){
 
             const newCharacter2:AICharacter = this.bestGradeCharacter.copy ();
             newCharacter2.randomize ();

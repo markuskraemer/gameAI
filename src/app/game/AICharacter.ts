@@ -81,7 +81,10 @@ export class AICharacter extends Character{
 
         this.color = new Color(json['color'].color);
         this.createBrain ();
+        //this.brain.generateMesh ();
+
         this.brain.setConnectionTargets (); 
+
     }
 
 
