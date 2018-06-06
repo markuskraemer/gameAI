@@ -53,7 +53,7 @@ export class AICharacter extends Character{
             this.createNeurons ();
             this.createBrain ();
             this.brain.generateMesh ();
-            this.brain.setConnectionTargets ();
+            this.brain.setConnectionFromNeurons ();
             this.brain.randomizeWeights ();
         }
 
@@ -83,7 +83,7 @@ export class AICharacter extends Character{
         this.createBrain ();
         //this.brain.generateMesh ();
 
-        this.brain.setConnectionTargets (); 
+        this.brain.setConnectionFromNeurons (); 
 
     }
 
@@ -95,7 +95,7 @@ export class AICharacter extends Character{
         other.walkedTiles = this.walkedTiles.slice (this.walkedTiles.length-4);
         other.viewAngle = this.viewAngle;
         other.brain.generateMesh ();
-        other.brain.setConnectionTargets ();
+        other.brain.setConnectionFromNeurons ();
         other.brain.copyWeightsFrom (this.brain);
         
         return other;
