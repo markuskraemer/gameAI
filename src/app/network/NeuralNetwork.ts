@@ -5,46 +5,50 @@ import { Neuron } from './Neuron';
 
 export class NeuralNetwork {
 
-    private layers:Neuron[][] = [[],[]];
+    private _layers:Neuron[][];
 
     public get inputLayer ():InputNeuron[] {
-        return this.layers[0] as InputNeuron[];
+        return this._layers[0] as InputNeuron[];
     }
 
     public get outputLayer ():WorkingNeuron[] {
-        return this.layers[this.layers.length-1] as WorkingNeuron[];
+        return this._layers[this._layers.length-1] as WorkingNeuron[];
     }
 
     public get hiddenLayer ():WorkingNeuron[] {
-        return this.layers.length == 3 ? this.layers[1] as WorkingNeuron [] : null;
+        return this._layers.length == 3 ? this._layers[1] as WorkingNeuron [] : null;
     }
 
-    public addInputNeuron (inputNeuron:InputNeuron):void {
-        this.inputLayer.push(inputNeuron);
+    constructor (inputLayerCount:number, hiddenLayerCount:number, outputLayerCount:number)
+    constructor (inputLayerCount:number, outputLayerCount:number)
+    constructor (...args){
+        this.createNeurons (args);
+        this.connectAll ();
+        this.setConnectionFromNeurons ();
     }
 
-    public addHiddentNeuron (hiddenNeuron:WorkingNeuron):void {
-        this.hiddenLayer.push (hiddenNeuron);
-    }
+    private createNeurons (args){
+        this._layers = [];
+        for(let i:number = 0; i < args.length; ++i){
+            this._layers[i] = [];
+            for(let j:number = 0; j < args[i]; ++j){
+                if(i == 0){
+                    this._layers[i][j] = new InputNeuron ('input_' + j);
+                }else if(i == args.length-1) {
+                    this._layers[i][j] = new WorkingNeuron ('output_' + j);
+                }else{
+                    this._layers[i][j] = new WorkingNeuron ('hidden_' + i + '_' + j);                    
+                }
 
-    public setHiddenNeuronCount (count:number):void {
-        if(this.layers.length == 2){
-            this.layers.splice (0, 0, []);
+            }
         }
-        while(count-- > 0){
-            const hiddenNeuron:WorkingNeuron = new WorkingNeuron ('hidden_' + this.hiddenLayer.length);
-            this.addHiddentNeuron(hiddenNeuron);
-        }
     }
 
-    public addOutputNeuron (outputNeuron:WorkingNeuron):void {
-        this.outputLayer.push (outputNeuron);
-    }
 
-    public generateMesh ():void {
-        for(let layerIndex:number = this.layers.length-1; layerIndex >= 1; --layerIndex){
-            const layer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex];
-            const prevLayer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex-1];
+    public connectAll ():void {
+        for(let layerIndex:number = this._layers.length-1; layerIndex >= 1; --layerIndex){
+            const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
+            const prevLayer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex-1];
             this.generateMeshOfLayer(layer, prevLayer);                
         }
     }
@@ -62,10 +66,32 @@ export class NeuralNetwork {
     }
 
 
+    public addInputNeuron (inputNeuron:InputNeuron):void {
+        this.inputLayer.push(inputNeuron);
+    }
+
+    public addHiddentNeuron (hiddenNeuron:WorkingNeuron):void {
+        this.hiddenLayer.push (hiddenNeuron);
+    }
+
+    public setHiddenNeuronCount (count:number):void {
+        if(this._layers.length == 2){
+            this._layers.splice (1, 0, []);
+        }
+        while(count-- > 0){
+            const hiddenNeuron:WorkingNeuron = new WorkingNeuron ('hidden_' + this.hiddenLayer.length);
+            this.addHiddentNeuron(hiddenNeuron);
+        }
+    }
+
+    public addOutputNeuron (outputNeuron:WorkingNeuron):void {
+        this.outputLayer.push (outputNeuron);
+    }
+
     public setConnectionFromNeurons ():void {
-        for(let layerIndex:number = this.layers.length-1; layerIndex >= 1; --layerIndex){
-            const layer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex];
-            const prevLayer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex-1];
+        for(let layerIndex:number = this._layers.length-1; layerIndex >= 1; --layerIndex){
+            const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
+            const prevLayer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex-1];
             this.setConnectionFromNeuronsOfLayer (layer, prevLayer);
         }
     } 
@@ -81,8 +107,8 @@ export class NeuralNetwork {
     }
 
     public randomizeWeights ():void {
-        for(let layerIndex:number = this.layers.length-1; layerIndex >= 1; --layerIndex){
-            const layer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex];
+        for(let layerIndex:number = this._layers.length-1; layerIndex >= 1; --layerIndex){
+            const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
             this.randomizeWeightsOfLayer (layer);
         }        
     }
@@ -96,9 +122,9 @@ export class NeuralNetwork {
     }
 
     public copyWeightsFrom (other:NeuralNetwork):void {
-        for(let layerIndex:number = this.layers.length-1; layerIndex >= 1; --layerIndex){
-            const layer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex];
-            const otherLayer:WorkingNeuron[] = <WorkingNeuron[]> other.layers[layerIndex];
+        for(let layerIndex:number = this._layers.length-1; layerIndex >= 1; --layerIndex){
+            const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
+            const otherLayer:WorkingNeuron[] = <WorkingNeuron[]> other._layers[layerIndex];
             this.copyWeightsFromLayer(otherLayer, layer);
         }
     }
@@ -113,8 +139,8 @@ export class NeuralNetwork {
 
 
     public randomizeAnyConnection (f:number):void {
-        const layerIndex:number = Math.floor (Math.random () * this.layers.length);
-        const layer:WorkingNeuron[] = <WorkingNeuron[]> this.layers[layerIndex];
+        const layerIndex:number = 1 + Math.floor (Math.random () * (this._layers.length-1));
+        const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
 
         this.randomizeAnyConnectionLayer (layer);
     }
@@ -125,7 +151,7 @@ export class NeuralNetwork {
 
         const connectionIndex:number = Math.floor (Math.random () * neuron.connections.length);
         const connection:Connection = neuron.connections[connectionIndex];
-        
+
         connection.weight = Math.random () * 2 - 1;
     }
 

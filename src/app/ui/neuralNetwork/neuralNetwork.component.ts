@@ -75,6 +75,7 @@ export class NeuralNetworkComponent implements OnInit {
             this.context.strokeStyle = 'black';
 
             this.drawOutputLayer ();
+            this.drawHiddenLayer ();
             this.drawInputLayer ();
             this.drawConnections ();
             this.drawOutputs ();
@@ -105,6 +106,27 @@ export class NeuralNetworkComponent implements OnInit {
             this.context.strokeText (String(MathUtils.round3 (neuron.output)), this.getOutputNeuronX (i) + this.radius + 10, this.getOutputNeuronY (i) + 22);
         }
     }
+
+    private drawHiddenLayer ():void {
+        if(this._network.hiddenLayer == null)
+            return;
+
+        this.context.strokeStyle = 'black';
+
+        for(let i:number = 0; i < this._network.hiddenLayer.length; ++i){
+            const neuron:Neuron = this._network.hiddenLayer[i];
+            this.context.beginPath();
+            this.context.arc(this.getHiddenNeuronX (i), this.getHiddenNeuronY (i), this.radius, 0, 2 * Math.PI, false);
+            this.context.stroke();
+            this.context.font = '10px Arial';
+            this.context.lineWidth = 1;
+            this.context.strokeText (neuron.id, this.getHiddenNeuronX (i) + this.radius + 10, this.getHiddenNeuronY (i) + 5);
+
+            this.context.lineWidth = .5;
+            this.context.strokeText (String(MathUtils.round3 (neuron.output)), this.getHiddenNeuronX (i) + this.radius + 10, this.getHiddenNeuronY (i) + 22);
+        }
+    }
+
 
     private drawInputLayer ():void {
         this.context.strokeStyle = 'black';
@@ -184,6 +206,46 @@ export class NeuralNetworkComponent implements OnInit {
         }        
     }
 
+    private drawConnectionsOfLayer (layer:WorkingNeuron[]):void {
+        for(let i:number = 0; i < layer.length; ++i){
+            const neuron:WorkingNeuron = layer[i];
+            for(let j:number = 0; j < neuron.connections.length; ++j){
+                const connection:Connection = neuron.connections[j];
+                const startX:number = this.getInputNeuronX (j);
+                const startY:number = this.getInputNeuronY (j);
+                    // das geht nicht!
+                const endX:number = this.getOutputNeuronX (i);
+                const endY:number = this.getOutputNeuronY (i);
+
+                const drawInfo:boolean = this.infoConnectionNames.indexOf (connection.id) >= 0; 
+
+                this.context.lineWidth = drawInfo ? 3 : 1;
+            
+                this.context.strokeStyle = this.getColor (connection.weight);
+                this.context.beginPath ();
+                this.context.moveTo (endX, endY);
+                this.context.lineTo (startX, startY);
+                this.context.stroke ();
+
+                if(drawInfo){
+                    this.context.lineWidth = .5;
+                    this.context.strokeStyle = 'black';
+                    this.context.fillStyle = 'white';
+                    this.context.fillRect (startX + (endX - startX) / 2 - 5, 
+                                      startY + (endY - startY) / 2 - 20,
+                                      35,
+                                      20);
+                    this.context.strokeText (String(MathUtils.round3(connection.weight)), 
+                                                startX + (endX - startX) / 2, 
+                                                startY + (endY - startY) / 2 - 5);
+                }
+
+            
+            }
+        }        
+
+    }
+ 
 
     private getColor (n:number):string {
 
@@ -194,12 +256,23 @@ export class NeuralNetworkComponent implements OnInit {
         }
     }
 
+
+
     private getOutputNeuronX (index:number):number {
         return this.width - 100 - this.radius;
     }
 
+    private getHiddenNeuronX (index:number):number {
+        return this.width / 2;
+    }
+
+
     private getInputNeuronY (index:number):number {
         return this.getNeuronYByNeuronCount(index, this._network.inputLayer.length);
+    }
+
+    private getHiddenNeuronY (index:number):number {
+        return this.getNeuronYByNeuronCount(index, this._network.hiddenLayer.length);
     }
 
     private getOutputNeuronY (index:number):number {

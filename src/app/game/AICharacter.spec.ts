@@ -8,6 +8,8 @@ describe ('creature test', () => {
     })
 
 
+
+
  
 
     it('#creature copy test', () => {       
@@ -19,7 +21,6 @@ describe ('creature test', () => {
         expect(seedCharacter.brain.outputLayer[0].connections[0].weight).toEqual(copy.brain.outputLayer[0].connections[0].weight);
         expect(seedCharacter.brain.outputLayer[1].connections[1].weight).toEqual(copy.brain.outputLayer[1].connections[1].weight);
 
-        expect(copy.brain.outputLayer[0].connections[0].fromNeuron).toEqual(copy.brain.inputLayer[0]);
 
     })
 

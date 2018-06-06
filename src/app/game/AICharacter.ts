@@ -29,8 +29,6 @@ export class AICharacter extends Character{
     public brain:NeuralNetwork;
     public inTL:InputNeuron;
     public inTR:InputNeuron;
-    //public inML:InputNeuron;
-    //public inMR:InputNeuron;
     public inT:InputNeuron;
 
     public outForward:WorkingNeuron;
@@ -38,8 +36,6 @@ export class AICharacter extends Character{
 
     public feelerTL:Feeler;
     public feelerTR:Feeler;
-    //public feelerML:Feeler;
-    //public feelerMR:Feeler;
     public feelerT:Feeler;
 
     public feelers:Feeler[] = [];
@@ -50,53 +46,37 @@ export class AICharacter extends Character{
     constructor (selfInit:boolean = true){
         super();
         if(selfInit) {
-            this.createNeurons ();
+         //   this.createNeurons ();
             this.createBrain ();
-            this.brain.generateMesh ();
-            this.brain.setConnectionFromNeurons ();
             this.brain.randomizeWeights ();
         }
-
         this.createFeelers ();
-
     }
 
 
     public static fromJSON (json:JSON):AICharacter{
         const character:AICharacter = new AICharacter (false);
-        character.createBrainFromJSON (json);
+        character.color = new Color(json['color'].color);
+        
+        character.createBrain ();
+        character.brain.copyWeightsFrom (json['brain']);;
+
         return character;
     }
 
     private createBrainFromJSON (json:any):void {
-
-        this.inT = InputNeuron.fromJSON (json['inT']);
-        this.inTL = InputNeuron.fromJSON (json['inTL']);
-        this.inTR = InputNeuron.fromJSON (json['inTR']);
-        //this.inML = InputNeuron.fromJSON (json['inML']);
-        //this.inMR = InputNeuron.fromJSON (json['inMR']);
-
-        this.outForward = WorkingNeuron.fromJSON(json['outForward']);
-        this.outRotate = WorkingNeuron.fromJSON(json['outRotate']);
-
-        this.color = new Color(json['color'].color);
-        this.createBrain ();
-        //this.brain.generateMesh ();
-
-        this.brain.setConnectionFromNeurons (); 
 
     }
 
 
     public copy ():AICharacter {
         const other:AICharacter = new AICharacter (false);
-        other.createNeurons ();
+       // other.createNeurons ();
         other.createBrain ();
+        other.brain.copyWeightsFrom (this.brain);
+
         other.walkedTiles = this.walkedTiles.slice (this.walkedTiles.length-4);
         other.viewAngle = this.viewAngle;
-        other.brain.generateMesh ();
-        other.brain.setConnectionFromNeurons ();
-        other.brain.copyWeightsFrom (this.brain);
         
         return other;
     }
@@ -115,10 +95,13 @@ export class AICharacter extends Character{
 
     public tick ():void {
         
-         this.updateFeelersAndInputs ();
+        this.updateFeelersAndInputs ();
         
-        this.moveForward (MathUtils.clamp01 (this.outForward.output));
-        this.rotate (MathUtils.clampNegPos (this.outRotate.output));
+        const outForward:WorkingNeuron = this.brain.outputLayer[0];
+        const outRotate:WorkingNeuron = this.brain.outputLayer[1];
+
+        this.moveForward (MathUtils.clamp01 (outForward.output));
+        this.rotate (MathUtils.clampNegPos (outRotate.output));
 
         this.checkKeyboard ();
 
@@ -183,18 +166,20 @@ export class AICharacter extends Character{
 
     private createBrain ():void {
 
-        this.brain = new NeuralNetwork ();
-
+        this.brain = new NeuralNetwork (3,4,2);
+        /*
         this.brain.addInputNeuron (this.inTL);
         this.brain.addInputNeuron (this.inTR);
-       // this.brain.addInputNeuron (this.inML);
-       // this.brain.addInputNeuron (this.inMR);
         this.brain.addInputNeuron (this.inT);
 
         this.brain.addOutputNeuron (this.outForward);
         this.brain.addOutputNeuron (this.outRotate);
+
+        this.brain.setHiddenNeuronCount (4);
+        */
     }
 
+/*
     private createNeurons ():void {
         this.inTL = new InputNeuron (NeuronIds.TL);
         this.inTR = new InputNeuron (NeuronIds.TR);
@@ -204,13 +189,11 @@ export class AICharacter extends Character{
         this.outForward = new WorkingNeuron (NeuronIds.Forward);
         this.outRotate = new WorkingNeuron (NeuronIds.Rotate);
     }
-
+*/
     private createFeelers ():void {
         this.feelerT = new Feeler (0, 0, 0, -this.feelerDist*1.5);
         this.feelerTL = new Feeler (0, 0, -this.feelerDist, -this.feelerDist);
         this.feelerTR = new Feeler (0, 0, this.feelerDist, -this.feelerDist);
-        //this.feelerML = new Feeler (0, 0, -this.feelerDist, 0);
-        //this.feelerMR = new Feeler (0, 0, this.feelerDist, 0);
         
         this.feelers.push (this.feelerT, this.feelerTL, this.feelerTR);
     }
@@ -221,11 +204,13 @@ export class AICharacter extends Character{
             this.updateFeeler(feeler);
         }
 
-        this.inTL.input = this.feelerTL.freeSpaceValue;
-        this.inTR.input = this.feelerTR.freeSpaceValue;
-        //this.inML.input = this.feelerML.freeSpaceValue;
-        //this.inMR.input = this.feelerMR.freeSpaceValue;
-        this.inT.input = this.feelerT.freeSpaceValue;
+        const inTL:InputNeuron = this.brain.inputLayer[0];
+        const inTR:InputNeuron = this.brain.inputLayer[1];
+        const inT:InputNeuron = this.brain.inputLayer[2];
+
+        inTL.input = this.feelerTL.freeSpaceValue;
+        inTR.input = this.feelerTR.freeSpaceValue;
+        inT.input = this.feelerT.freeSpaceValue;
     }   
 
     private updateFeeler (feeler:Feeler):void {
