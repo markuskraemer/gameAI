@@ -6,7 +6,8 @@
 <div>
     bestGrade:{{gameService.bestGrade}}<br>
     num Chars:{{gameService.characters.length}}<br>    
-    Ticks:{{tickService.ticks}} | Time:{{ formatterService.toDuration(tickService.ticks) }}
+    Ticks:{{tickService.ticks}} | Time:{{ formatterService.toDuration(tickService.ticks) }}<br>
+    <input type="button" value="{{tickService.isRunning?'Stop':'Start'}}" (click)="tickService.isRunning?tickService.stop():tickService.start()">
 </div>
 <div class="ui">
     <input type="button" value="load..." (click)="dialogService.openStorageList()">
