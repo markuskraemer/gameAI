@@ -19,6 +19,10 @@ export class NeuralNetwork {
         return this._layers.length == 3 ? this._layers[1] as WorkingNeuron [] : null;
     }
 
+    public get layers ():Neuron[][]{
+        return this._layers;
+    }
+
     constructor (inputLayerCount:number, hiddenLayerCount:number, outputLayerCount:number)
     constructor (inputLayerCount:number, outputLayerCount:number)
     constructor (...args){

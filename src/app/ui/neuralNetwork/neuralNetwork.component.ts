@@ -168,6 +168,11 @@ export class NeuralNetworkComponent implements OnInit {
 
 
     private drawConnections ():void {
+
+        for(let i:number = 1; i < this._network.layers.length; ++i){
+            this.drawConnectionsOfLayer(i);
+        }
+        /*
         for(let i:number = 0; i < this._network.outputLayer.length; ++i){
             const neuron:WorkingNeuron = this._network.outputLayer[i];
             for(let j:number = 0; j < neuron.connections.length; ++j){
@@ -203,19 +208,21 @@ export class NeuralNetworkComponent implements OnInit {
 
             
             }
-        }        
+        }      */  
     }
 
-    private drawConnectionsOfLayer (layer:WorkingNeuron[]):void {
+
+    private drawConnectionsOfLayer (layerIndex:number):void {
+        const layer:WorkingNeuron[] = this._network.layers[layerIndex] as WorkingNeuron[];
         for(let i:number = 0; i < layer.length; ++i){
             const neuron:WorkingNeuron = layer[i];
             for(let j:number = 0; j < neuron.connections.length; ++j){
                 const connection:Connection = neuron.connections[j];
-                const startX:number = this.getInputNeuronX (j);
-                const startY:number = this.getInputNeuronY (j);
-                    // das geht nicht!
-                const endX:number = this.getOutputNeuronX (i);
-                const endY:number = this.getOutputNeuronY (i);
+                const startX:number = this.getNeuronX (layerIndex);
+                const startY:number = this.getNeuronY (layerIndex, i);
+                    
+                const endX:number = this.getNeuronX (layerIndex-1);
+                const endY:number = this.getNeuronY (layerIndex-1, j);
 
                 const drawInfo:boolean = this.infoConnectionNames.indexOf (connection.id) >= 0; 
 
@@ -279,10 +286,22 @@ export class NeuralNetworkComponent implements OnInit {
         return this.getNeuronYByNeuronCount(index, this._network.outputLayer.length);
     }
 
+    private getNeuronX (layerIndex:number):number {
+        const offset:number = (this.width - this.radius*2 - this.marginTopBottom*2) / (this._network.layers.length-1);  
+        return offset * layerIndex + this.radius + this.marginTopBottom;
+    }
+
+    private getNeuronY (layerIndex:number, neuronIndex:number):number {
+        const neuronCount:number = this._network.layers[layerIndex].length;
+        const offset:number = (this.height - this.radius*2 - this.marginTopBottom*2) / (neuronCount-1);  
+        return offset * neuronIndex + this.radius + this.marginTopBottom;
+    }
+
+
+
     private getNeuronYByNeuronCount (index:number, neuronCount:number):number {
         const offset:number = (this.height - this.radius*2 - this.marginTopBottom*2) / (neuronCount-1);  
         return offset * index + this.radius + this.marginTopBottom;
-
     }
 
 

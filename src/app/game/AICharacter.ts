@@ -165,31 +165,9 @@ export class AICharacter extends Character{
     }
 
     private createBrain ():void {
-
         this.brain = new NeuralNetwork (3,4,2);
-        /*
-        this.brain.addInputNeuron (this.inTL);
-        this.brain.addInputNeuron (this.inTR);
-        this.brain.addInputNeuron (this.inT);
-
-        this.brain.addOutputNeuron (this.outForward);
-        this.brain.addOutputNeuron (this.outRotate);
-
-        this.brain.setHiddenNeuronCount (4);
-        */
     }
 
-/*
-    private createNeurons ():void {
-        this.inTL = new InputNeuron (NeuronIds.TL);
-        this.inTR = new InputNeuron (NeuronIds.TR);
-        //this.inML = new InputNeuron (NeuronIds.ML);
-        //this.inMR = new InputNeuron (NeuronIds.MR);
-        this.inT = new InputNeuron (NeuronIds.T);
-        this.outForward = new WorkingNeuron (NeuronIds.Forward);
-        this.outRotate = new WorkingNeuron (NeuronIds.Rotate);
-    }
-*/
     private createFeelers ():void {
         this.feelerT = new Feeler (0, 0, 0, -this.feelerDist*1.5);
         this.feelerTL = new Feeler (0, 0, -this.feelerDist, -this.feelerDist);

@@ -123,11 +123,11 @@ export class GameService {
             newCharacter2.randomize ();
             this.addCharacter (newCharacter2);
 
-            if(newCharacter2.walkedTiles.length > 2){
-                newCharacter2.goBack (1);
-            }else{
+            // if(newCharacter2.walkedTiles.length > 2){
+               // newCharacter2.goBack (1);
+            //}else{
                  this.placeAtAllowedPoint (newCharacter2);
-            }
+            // }
          }else{
             if(this._characters.length < this.configService.characterCount){
                 const newCharacter = this.createAICharacter ();
