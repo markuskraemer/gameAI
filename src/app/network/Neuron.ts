@@ -7,6 +7,8 @@ export abstract class Neuron
     public bias: number = 0;
     public abstract get output(): number;
     
+    public name:string;    
+
     constructor (public id:string){
         
     }

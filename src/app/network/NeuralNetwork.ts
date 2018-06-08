@@ -31,6 +31,32 @@ export class NeuralNetwork {
         this.setConnectionFromNeurons ();
     }
 
+    public getInfo ():string {
+        let result:string = 'NN [';
+        for(let i:number = 0; i < this._layers.length; ++i){
+            result += this._layers[i].length + ' ';
+        }
+        result += ']\n';
+        for(let i:number = 1; i < this._layers.length; ++i){
+            for(let j:number = 0; j < this._layers[i].length; ++j){
+                result += this.getNeuronInfo (i, j) + '\n';
+            }
+        }
+        return result;
+    }
+
+    private getNeuronInfo (layerIndex:number, neuronIndex:number):string {
+        const neuron:Neuron = this._layers[layerIndex][neuronIndex];
+        let result:string = '  ' + neuron.name + '\n';
+        if(layerIndex > 0){
+            const neuron:WorkingNeuron = <WorkingNeuron> this._layers[layerIndex][neuronIndex];
+            for(let i:number = 0; i < neuron.connections.length; ++i){
+                result += '  ' + neuron.connections[i].id + ": " + neuron.connections[i].weight + '\n';
+            }
+        }
+        return result;
+    }
+
     private createNeurons (args){
         this._layers = [];
         for(let i:number = 0; i < args.length; ++i){
@@ -47,6 +73,7 @@ export class NeuralNetwork {
             }
         }
     }
+
 
 
     public connectAll ():void {
@@ -112,15 +139,16 @@ export class NeuralNetwork {
 
     public randomizeWeights ():void {
         for(let layerIndex:number = this._layers.length-1; layerIndex >= 1; --layerIndex){
-            const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
+            let layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
             this.randomizeWeightsOfLayer (layer);
         }        
     }
 
     private randomizeWeightsOfLayer (layer:WorkingNeuron[]):void{
         for(let i:number = 0; i < layer.length; ++i){
-            for(const connection of layer[i].connections){
+            for(let connection of layer[i].connections){
                 connection.weight = Math.random () * 2 - 1; 
+              //  console.log("rwl: " + i + " connection: ", connection);
             }
         }
     }
@@ -146,17 +174,28 @@ export class NeuralNetwork {
         const layerIndex:number = 1 + Math.floor (Math.random () * (this._layers.length-1));
         const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
 
-        this.randomizeAnyConnectionLayer (layer);
+        this.randomizeAnyConnectionLayer (layer, f);
     }
 
-    private randomizeAnyConnectionLayer (layer:WorkingNeuron[]):void{
+    private randomizeAnyConnectionLayer (layer:WorkingNeuron[],f:number):void{
         const neuronIndex:number = Math.floor(Math.random() * layer.length);
         const neuron:WorkingNeuron = layer[neuronIndex];
 
         const connectionIndex:number = Math.floor (Math.random () * neuron.connections.length);
         const connection:Connection = neuron.connections[connectionIndex];
 
-        connection.weight = Math.random () * 2 - 1;
+        connection.weight += Math.random () * f - f/2;
+    }
+
+    public synchronize (seedNeuronLayerIndex:number, seedNeuronNeuronIndex:number, targetNeuronLayerIndex:number, targetNeuronNeuronIndex:number):void {
+        /*
+        const seedLayer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[seedNeuronLayerIndex+1];
+        const targetLayer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[targetNeuronLayerIndex+1];
+        for(let neuronIndex:number = 0; neuronIndex < targetLayer.length; ++neuronIndex){
+            const seedNeuron:WorkingNeuron = seedLayer[neuronIndex];
+            const targetNeuron:WorkingNeuron = targetLayer[neuronIndex];
+            targetNeuron.connections[targetNeuronNeuronIndex].weight = -seedNeuron.connections[seedNeuronNeuronIndex].weight;
+        }*/
     }
 
 

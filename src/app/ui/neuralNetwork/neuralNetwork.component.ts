@@ -106,7 +106,7 @@ export class NeuralNetworkComponent implements OnInit {
         this.context.stroke();
         this.context.font = '10px Arial';
         this.context.lineWidth = 1;
-        this.context.strokeText (neuron.id, x + this.radius + 10, y + 5);
+        this.context.strokeText (neuron.name || neuron.id, x + this.radius + 10, y + 5);
 
         this.context.lineWidth = .5;
         this.context.strokeText (String(MathUtils.round3 (neuron.output)), x + this.radius + 10, y + 22); 

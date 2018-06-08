@@ -16,7 +16,17 @@ export class GameService {
     private _characters:Character[] = [];
     public bestGrade:number = 2;
     public bestGradeCharacter:AICharacter;
-    public inspectedCharacter:AICharacter;
+
+    private _inspectedCharacter:AICharacter;
+
+    public set inspectedCharacter (value:AICharacter){
+        console.log("inspectedCharacter: ", value.brain.getInfo ());
+        this._inspectedCharacter = value;
+    }
+
+    public get inspectedCharacter ():AICharacter{
+        return this._inspectedCharacter;
+    }
 
     public get characters ():Character[] {
         return this._characters;
@@ -52,22 +62,6 @@ export class GameService {
             const aiCharacter = this.createAICharacter ();
             this.placeAtAllowedPoint (aiCharacter); 
        }
-     }
-
-     private generateRandomColor (seed:number):number {
-         const c0:number = (seed * 50) % 255;
-         const c1:number = 255;
-         const c2:number = 255;
-         if(seed % 3 == 0)  
-             return c0 << 16 | c1 << 8 | c2;
-        
-        if(seed % 3 == 1)  
-            return c1 << 16 | c0 << 8 | c2;
-
-        if(seed % 3 == 2)  
-            return c2 << 16 | c0 << 8 | c1;
-
-
      }
 
      private createAICharacter ():AICharacter {
@@ -121,6 +115,7 @@ export class GameService {
 
             const newCharacter2:AICharacter = this.bestGradeCharacter.copy ();
             newCharacter2.randomize ();
+            console.log("COPY: ", newCharacter2.brain.getInfo ());
             this.addCharacter (newCharacter2);
 
             // if(newCharacter2.walkedTiles.length > 2){

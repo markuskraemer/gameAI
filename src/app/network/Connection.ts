@@ -2,7 +2,7 @@
 
 export class Connection
 {
-    public weight: number;
+    public weight: number = 6.66;
     public newWeight: number;
     public id: string;
     public fromNeuron:Neuron;
