@@ -40,7 +40,7 @@ export class Character {
     }
 
     public moveForward (factor:number = 1):void {
-
+        //console.log("mf: " , factor);
         const newX:number = this.x + Math.sin(this.viewAngle) * Alias.configService.speed * factor;
         const newY:number = this.y - Math.cos(this.viewAngle) * Alias.configService.speed * factor;
         this.x = newX;

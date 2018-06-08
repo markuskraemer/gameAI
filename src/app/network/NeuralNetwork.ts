@@ -198,6 +198,13 @@ export class NeuralNetwork {
         }
     }
 
+    public getConnectionWeight (layerIndex:number, neuronIndex:number, fromNeuronIndex:number):number {
+        const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
+        const neuron:WorkingNeuron = layer[neuronIndex];
+        return neuron.connections[fromNeuronIndex].weight;        
+    }
+
+
     public setConnectionWeight (layerIndex:number, neuronIndex:number, fromNeuronIndex:number, weight:number):void {
         const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
         const neuron:WorkingNeuron = layer[neuronIndex];

@@ -46,7 +46,6 @@ export class AICharacter extends Character{
     constructor (selfInit:boolean = true){
         super();
         if(selfInit) {
-         //   this.createNeurons ();
             this.createBrain ();
         }
         this.createFeelers ();
@@ -70,16 +69,19 @@ export class AICharacter extends Character{
         other.createBrain ();
         other.brain.copyWeightsFrom (this.brain);
 
-        other.walkedTiles = this.walkedTiles.slice (this.walkedTiles.length-4);
-        other.viewAngle = this.viewAngle;
+        //other.walkedTiles = this.walkedTiles.slice (this.walkedTiles.length-4);
+        //other.viewAngle = this.viewAngle;
         
         return other;
     }
 
     public randomize ():void {
         this.brain.randomizeAnyConnection (.4);
-        this.brain.synchronize(0,0,0,2);
-        this.brain.synchronize(0,3,0,4);
+       //  this.brain.synchronize(0,0,0,2);
+        // const outputLayerIndex:number = this.brain.layers.length - 1;
+        // this.brain.setConnectionWeight(outputLayerIndex, 0, 2, 202);
+        // this.brain.getConnectionWeight (outputLayerIndex, 0, 0);
+        console.log("After randomize: ", this.brain.getInfo());
     }
 
     public hasFeelers ():boolean {
@@ -97,7 +99,7 @@ export class AICharacter extends Character{
         const outForward:WorkingNeuron = this.brain.outputLayer[0];
         const outRotate:WorkingNeuron = this.brain.outputLayer[1];
 
-        this.moveForward (MathUtils.sigmoid (outForward.output));
+        this.moveForward (MathUtils.clamp01 (outForward.output));
         this.rotate (MathUtils.clampNegPos (outRotate.output));
 
         this.checkKeyboard ();
@@ -147,7 +149,7 @@ export class AICharacter extends Character{
         }
     }
 
-    private checkKeyboard ():void {
+    protected checkKeyboard ():void {
         if(Alias.keyboardService.isPressed(Key.W)){
              this.moveForward ();
          }
@@ -162,19 +164,16 @@ export class AICharacter extends Character{
     }
 
     private createBrain ():void {
-        this.brain = new NeuralNetwork (5,2);
+        this.brain = new NeuralNetwork (3,2);
         this.setInitialConnectionWeights ();
         this.brain.inputLayer[0].name = 'TL';
         this.brain.inputLayer[1].name = 'T';
         this.brain.inputLayer[2].name = 'TR';
-        this.brain.inputLayer[3].name = 'ML';
-        this.brain.inputLayer[4].name = 'MR';
 
         this.brain.outputLayer[0].name = 'Forward';
         this.brain.outputLayer[1].name = 'Rotation';
 
         this.brain.synchronize (0, 0, 0, 2);
-        this.brain.synchronize (0, 3, 0, 4);
 
         console.log ('brain: ', this.brain.getInfo());    
     }
@@ -184,17 +183,14 @@ export class AICharacter extends Character{
     }
 
     private createFeelers ():void {
-        this.feelerT = new Feeler (0, 0, 0, -this.feelerDist*1.5);
+        this.feelerT = new Feeler (0, -this.height/2 - this.feelerDist*.1, 0, -this.height/2 - this.feelerDist*.1-this.feelerDist*1.0);
         this.feelerTL = new Feeler (0, 0, -this.feelerDist, -this.feelerDist);
         this.feelerTR = new Feeler (0, 0, this.feelerDist, -this.feelerDist);
 
-        this.feelerML = new Feeler (0, 0, -this.feelerDist, 0);
-        this.feelerMR = new Feeler (0, 0, this.feelerDist, 0);
-
-        this.feelers.push (this.feelerT, this.feelerTL, this.feelerTR, this.feelerML, this.feelerMR);
+        this.feelers.push (this.feelerT, this.feelerTL, this.feelerTR);
     }
 
-    private updateFeelersAndInputs ():void {
+    protected updateFeelersAndInputs ():void {
         
         for(const feeler of this.feelers){
             this.updateFeeler(feeler);
@@ -203,27 +199,25 @@ export class AICharacter extends Character{
         const inTL:InputNeuron = this.brain.inputLayer[0];
         const inT:InputNeuron = this.brain.inputLayer[1];
         const inTR:InputNeuron = this.brain.inputLayer[2];
-        const inML:InputNeuron = this.brain.inputLayer[3];
-        const inMR:InputNeuron = this.brain.inputLayer[4];
 
         inTL.input = this.feelerTL.freeSpaceValue;
         inTR.input = this.feelerTR.freeSpaceValue;
         inT.input = this.feelerT.freeSpaceValue;
-        inML.input = this.feelerML.freeSpaceValue;
-        inMR.input = this.feelerMR.freeSpaceValue;
     }   
 
     private updateFeeler (feeler:Feeler):void {
         feeler.freeSpaceValue = 1;
-        for(let i:number = 1; i > .2; i -= .1){
-            if(this.checkPointIsOnWall (feeler.endX*i, feeler.endY*i)){
-                feeler.freeSpaceValue = i;
+        for(let i:number = 1; i > .0; i -= .1){
+            const distX:number = feeler.endX - feeler.startX;
+            const distY:number = feeler.endY - feeler.startY;
+            if(this.checkPointIsOnWall (feeler.startX, feeler.startY, feeler.startX + distX * i, feeler.startY + distY * i)){
+               feeler.freeSpaceValue = i;
             }            
         }
     } 
 
-    private checkPointIsOnWall (distX:number, distY:number):boolean {
-        const p:XY = MathUtils.rotateXY (distX, distY, this.viewAngle, 0, 0);
+    private checkPointIsOnWall (startX:number, startY:number, endX:number, endY:number):boolean {
+        const p:XY = MathUtils.rotateXY (endX, endY, this.viewAngle, 0, 0);
         if(Alias.mapService.getTileAt (this.x + p.x, this.y + p.y) == 0) {
             return true;
         }else{

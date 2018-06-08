@@ -1,3 +1,4 @@
+import { Alias } from './../Alias';
 import { AICharacter } from './AICharacter';
 export class CustomAICharacter extends AICharacter {
 
@@ -5,17 +6,17 @@ export class CustomAICharacter extends AICharacter {
         this.brain.setConnectionWeight (1, 0, 0, 0);        
         this.brain.setConnectionWeight (1, 0, 1, 1);        
         this.brain.setConnectionWeight (1, 0, 2, 0);        
-        this.brain.setConnectionWeight (1, 0, 3, 0);        
-        this.brain.setConnectionWeight (1, 0, 4, 0);        
 
-
-        this.brain.setConnectionWeight (1, 1, 0, -2);        
+        this.brain.setConnectionWeight (1, 1, 0, -1);        
         this.brain.setConnectionWeight (1, 1, 1, 0);        
-        this.brain.setConnectionWeight (1, 1, 2, 2);        
-        this.brain.setConnectionWeight (1, 1, 3, 0);        
-        this.brain.setConnectionWeight (1, 1, 4, 0);        
+        this.brain.setConnectionWeight (1, 1, 2, 1);        
+
+        this.brain.outputLayer[0].bias = -.1;
 
     }
 
-
+    public _tick ():void{
+        this.checkKeyboard ();
+        this.updateFeelersAndInputs ();
+    }
 }

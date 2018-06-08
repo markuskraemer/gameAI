@@ -88,7 +88,7 @@ export class CharacterComponent implements OnInit {
             if(character.hasFeelers ()){
                 this.drawFeelers (<AICharacter> character);
             }
-                    this.context.restore ();
+            this.context.restore ();
 
         }
 
@@ -97,11 +97,11 @@ export class CharacterComponent implements OnInit {
 
     private drawFeelers (character:AICharacter):void {
         for(const feeler of character.feelers){
-            this.drawFeeler(feeler);
+            this.drawFeeler(feeler, character);
         }
     }
 
-    private drawFeeler (feeler:Feeler):void {
+    private drawFeeler (feeler:Feeler, character:AICharacter):void {
         const distX:number = feeler.endX - feeler.startX;
         const distY:number = feeler.endY - feeler.startY;
         

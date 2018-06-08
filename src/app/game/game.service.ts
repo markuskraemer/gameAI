@@ -45,6 +45,11 @@ export class GameService {
         this.tickService.tick.subscribe (()=>{
             this.tick ();
         })
+        this.keyboardService.mapUp (Key.R, ()=>{
+            const character:CustomAICharacter = new CustomAICharacter ();
+            this.addCharacter(character);
+            this.placeAtAllowedPoint(character);
+        })
      }
 
      public addNewCharacter (character:Character):void {
@@ -54,19 +59,19 @@ export class GameService {
 
      private createCharacters ():void {
 
-        const character:Character = new UserCharacter ();
+        const character:Character = new AICharacter ();
         character.x = 1.5 * this.mapService.tileSize;
         character.y = 3 * this.mapService.tileSize;
        // this._characters.push(character);
-       let n:number = this.configService.characterCount;
-       while(n-- > 0){
-            const aiCharacter = this.createAICharacter ();
-            this.placeAtAllowedPoint (aiCharacter); 
-       }
+        let n:number = this.configService.characterCount;
+        while(n-- > 0){
+                const aiCharacter = this.createAICharacter ();
+                this.placeAtAllowedPoint (aiCharacter); 
+        }
      }
 
      private createAICharacter ():AICharacter {
-        const aiCharacter = new CustomAICharacter ();
+        const aiCharacter = new AICharacter ();
         this.addCharacter(aiCharacter);
         return aiCharacter;
      }
