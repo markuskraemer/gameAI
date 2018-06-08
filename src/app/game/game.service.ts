@@ -1,3 +1,4 @@
+import { CustomAICharacter } from './CustomAICharacter';
 import { StorageService } from './../storage/storage.service';
 import { Alias } from './../Alias';
 import { UserCharacter } from './UserCharacter';
@@ -65,14 +66,14 @@ export class GameService {
      }
 
      private createAICharacter ():AICharacter {
-        const aiCharacter = new AICharacter ();
+        const aiCharacter = new CustomAICharacter ();
         this.addCharacter(aiCharacter);
         return aiCharacter;
      }
 
      public placeAtAllowedPoint(character:Character){
         character.x = 1.5 * this.mapService.tileSize;
-        character.y = (8 + this.characters.length % 4) * this.mapService.tileSize;
+        character.y = (2 + this.characters.length % 4) * this.mapService.tileSize;
        // character.color = '#' + this.generateRandomColor (this.characters.length).toString (16);
         
      }

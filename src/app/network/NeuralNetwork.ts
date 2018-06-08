@@ -188,14 +188,20 @@ export class NeuralNetwork {
     }
 
     public synchronize (seedNeuronLayerIndex:number, seedNeuronNeuronIndex:number, targetNeuronLayerIndex:number, targetNeuronNeuronIndex:number):void {
-        /*
+        
         const seedLayer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[seedNeuronLayerIndex+1];
         const targetLayer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[targetNeuronLayerIndex+1];
         for(let neuronIndex:number = 0; neuronIndex < targetLayer.length; ++neuronIndex){
             const seedNeuron:WorkingNeuron = seedLayer[neuronIndex];
             const targetNeuron:WorkingNeuron = targetLayer[neuronIndex];
             targetNeuron.connections[targetNeuronNeuronIndex].weight = -seedNeuron.connections[seedNeuronNeuronIndex].weight;
-        }*/
+        }
+    }
+
+    public setConnectionWeight (layerIndex:number, neuronIndex:number, fromNeuronIndex:number, weight:number):void {
+        const layer:WorkingNeuron[] = <WorkingNeuron[]> this._layers[layerIndex];
+        const neuron:WorkingNeuron = layer[neuronIndex];
+        neuron.connections[fromNeuronIndex].weight = weight;        
     }
 
 

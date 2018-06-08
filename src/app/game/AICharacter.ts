@@ -63,10 +63,6 @@ export class AICharacter extends Character{
         return character;
     }
 
-    private createBrainFromJSON (json:any):void {
-
-    }
-
 
     public copy ():AICharacter {
         const other:AICharacter = new AICharacter (false);
@@ -101,7 +97,7 @@ export class AICharacter extends Character{
         const outForward:WorkingNeuron = this.brain.outputLayer[0];
         const outRotate:WorkingNeuron = this.brain.outputLayer[1];
 
-        this.moveForward (MathUtils.clamp01 (outForward.output));
+        this.moveForward (MathUtils.sigmoid (outForward.output));
         this.rotate (MathUtils.clampNegPos (outRotate.output));
 
         this.checkKeyboard ();
@@ -144,7 +140,7 @@ export class AICharacter extends Character{
                 }
             }else{
                 ++this.ticksOnSameTile;
-                if(this.ticksOnSameTile == 60){
+                if(this.ticksOnSameTile == 180){
                     Alias.gameService.removeCharacter (this);
                 }
             }
@@ -167,7 +163,7 @@ export class AICharacter extends Character{
 
     private createBrain ():void {
         this.brain = new NeuralNetwork (5,2);
-        this.brain.randomizeWeights ();
+        this.setInitialConnectionWeights ();
         this.brain.inputLayer[0].name = 'TL';
         this.brain.inputLayer[1].name = 'T';
         this.brain.inputLayer[2].name = 'TR';
@@ -181,6 +177,10 @@ export class AICharacter extends Character{
         this.brain.synchronize (0, 3, 0, 4);
 
         console.log ('brain: ', this.brain.getInfo());    
+    }
+
+    protected setInitialConnectionWeights ():void {
+        this.brain.randomizeWeights ();
     }
 
     private createFeelers ():void {
