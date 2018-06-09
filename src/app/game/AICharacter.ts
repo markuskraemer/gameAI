@@ -77,7 +77,7 @@ export class AICharacter extends Character{
 
     public randomize ():void {
         this.brain.randomizeAnyConnection (.4);
-       //  this.brain.synchronize(0,0,0,2);
+        this.brain.synchronize(0,0,0,2);
         // const outputLayerIndex:number = this.brain.layers.length - 1;
         // this.brain.setConnectionWeight(outputLayerIndex, 0, 2, 202);
         // this.brain.getConnectionWeight (outputLayerIndex, 0, 0);
@@ -104,7 +104,7 @@ export class AICharacter extends Character{
 
         this.checkKeyboard ();
 
-        if(!this.checkPoints (this.x, this.y, this.viewAngle)){
+        if(!this.checkPoints (this.x, this.y, this.viewRad)){
              Alias.gameService.removeCharacter(this);
         }
 
@@ -217,7 +217,7 @@ export class AICharacter extends Character{
     } 
 
     private checkPointIsOnWall (startX:number, startY:number, endX:number, endY:number):boolean {
-        const p:XY = MathUtils.rotateXY (endX, endY, this.viewAngle, 0, 0);
+        const p:XY = MathUtils.rotateXY (endX, endY, this.viewRad, 0, 0);
         if(Alias.mapService.getTileAt (this.x + p.x, this.y + p.y) == 0) {
             return true;
         }else{

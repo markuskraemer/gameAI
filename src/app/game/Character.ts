@@ -19,7 +19,7 @@ export class Character {
     public y:number = 0;
     public width:number = Alias.configService ? Alias.configService.tileSize / 4 : 10;
     public height:number = Alias.configService ? Alias.configService.tileSize / 2 : 20;
-    public viewAngle:number = 0;
+    public viewRad:number = 0;
     public color:Color;
     public id:number;
 
@@ -41,8 +41,8 @@ export class Character {
 
     public moveForward (factor:number = 1):void {
         //console.log("mf: " , factor);
-        const newX:number = this.x + Math.sin(this.viewAngle) * Alias.configService.speed * factor;
-        const newY:number = this.y - Math.cos(this.viewAngle) * Alias.configService.speed * factor;
+        const newX:number = this.x + Math.sin(this.viewRad) * Alias.configService.speed * factor;
+        const newY:number = this.y - Math.cos(this.viewRad) * Alias.configService.speed * factor;
         this.x = newX;
         this.y = newY;
     }
@@ -56,7 +56,7 @@ export class Character {
     }
 
     public rotate (factor:number){
-        this.viewAngle += Math.PI / 180 * Alias.configService.radPerRotation * factor;
+        this.viewRad += Math.PI / 180 * Alias.configService.radPerRotation * factor;
     }
 
     protected checkPoints (x:number, y:number, viewAngle:number):boolean {

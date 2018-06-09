@@ -60,7 +60,7 @@ export class CharacterComponent implements OnInit {
 
     private findCreatureByPosition (x:number, y:number){
         for(const character of this._characters){
-            const local:XY = MathUtils.rotateXY (x, y, -character.viewAngle, character.x, character.y);
+            const local:XY = MathUtils.rotateXY (x, y, -character.viewRad, character.x, character.y);
             if(local.x >= character.x - character.width / 2 && local.x < character.x + character.width / 2 
             &&  local.y >= character.y - character.height / 2 && local.y < character.y + character.height / 2){
                 return character;
@@ -79,7 +79,7 @@ export class CharacterComponent implements OnInit {
 
             this.context.fillStyle = character.color.rgb ().toString ();
             this.context.translate (character.x, character.y);
-            this.context.rotate (character.viewAngle);
+            this.context.rotate (character.viewRad);
             this.context.fillRect (-character.width/2, 
                                 - character.height/2, 
                                 character.width, 

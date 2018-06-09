@@ -65,8 +65,8 @@ export class GameService {
        // this._characters.push(character);
         let n:number = this.configService.characterCount;
         while(n-- > 0){
-                const aiCharacter = this.createAICharacter ();
-                this.placeAtAllowedPoint (aiCharacter); 
+            const aiCharacter = this.createAICharacter ();
+            this.placeAtAllowedPoint (aiCharacter); 
         }
      }
 
@@ -79,8 +79,6 @@ export class GameService {
      public placeAtAllowedPoint(character:Character){
         character.x = 1.5 * this.mapService.tileSize;
         character.y = (2 + this.characters.length % 4) * this.mapService.tileSize;
-       // character.color = '#' + this.generateRandomColor (this.characters.length).toString (16);
-        
      }
 
      public addCharacter (character:Character):void {
