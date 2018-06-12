@@ -119,14 +119,9 @@ export class GameService {
 
             const newCharacter2:AICharacter = this.bestGradeCharacter.copy ();
             newCharacter2.randomize ();
-            console.log("COPY: ", newCharacter2.brain.getInfo ());
             this.addCharacter (newCharacter2);
 
-            // if(newCharacter2.walkedTiles.length > 2){
-               // newCharacter2.goBack (1);
-            //}else{
-                 this.placeAtAllowedPoint (newCharacter2);
-            // }
+            this.placeAtAllowedPoint (newCharacter2);
          }else{
             if(this._characters.length < this.configService.characterCount){
                 const newCharacter = this.createAICharacter ();

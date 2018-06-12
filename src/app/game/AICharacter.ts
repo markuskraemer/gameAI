@@ -65,12 +65,8 @@ export class AICharacter extends Character{
 
     public copy ():AICharacter {
         const other:AICharacter = new AICharacter (false);
-       // other.createNeurons ();
         other.createBrain ();
         other.brain.copyWeightsFrom (this.brain);
-
-        //other.walkedTiles = this.walkedTiles.slice (this.walkedTiles.length-4);
-        //other.viewAngle = this.viewAngle;
         
         return other;
     }
@@ -78,10 +74,6 @@ export class AICharacter extends Character{
     public randomize ():void {
         this.brain.randomizeAnyConnection (.4);
         this.brain.synchronize(0,0,0,2);
-        // const outputLayerIndex:number = this.brain.layers.length - 1;
-        // this.brain.setConnectionWeight(outputLayerIndex, 0, 2, 202);
-        // this.brain.getConnectionWeight (outputLayerIndex, 0, 0);
-        console.log("After randomize: ", this.brain.getInfo());
     }
 
     public hasFeelers ():boolean {
@@ -172,10 +164,8 @@ export class AICharacter extends Character{
 
         this.brain.outputLayer[0].name = 'Forward';
         this.brain.outputLayer[1].name = 'Rotation';
-
+        this.brain.outputLayer[0].bias = -.2;
         this.brain.synchronize (0, 0, 0, 2);
-
-        console.log ('brain: ', this.brain.getInfo());    
     }
 
     protected setInitialConnectionWeights ():void {

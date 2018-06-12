@@ -14,11 +14,11 @@ export class MapService {
     
     private mapJSON:any;
     private _loaded:boolean;
+    public maps:any[] = [];
 
     public get loaded ():boolean {
         return this._loaded;
     }
-
 
     constructor(
          private http: Http,
@@ -31,16 +31,27 @@ export class MapService {
   private loadConfig(): void {
         this._loaded = false;
         this.http
-            .get('assets/maps/map.json')
+            .get('assets/maps/map2.json')
             .map((res: Response) => res.json())
             .subscribe((data: any) => {
-                this.mapJSON = data;   
+                this.mapJSON = data;
+                this.createMaps ();
                 this._loaded = true;             
             });
     }
 
+    private createMaps ():void {
+        console.log("createMaps: ", this.mapJSON.layers);
+        console.log("createMaps: ", this.mapJSON.layers.length);
+        for(let i:number = 0; i < this.mapJSON.layers.length; ++i){
+            const layer:any = this.mapJSON.layers[i];
+            console.log(i + " -> ", layer);
+            this.maps.push({title:layer.name});
+        }
+    }
+
     public get currentMap ():IMapData {
-        return this.mapJSON ? this.mapJSON.layers[0] : null;
+        return this.mapJSON ? this.mapJSON.layers[1] : null;
     }
 
     public get mapWidth ():number {

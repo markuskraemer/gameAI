@@ -1,3 +1,4 @@
+import { DropDownComponent } from './ui/drop-down/drop-down.component';
 import { FormatterService } from './utils/Formatter.service';
 import { CharacterPreviewComponent } from './ui/character-preview/character-preview.component';
 import { CharactersStorageListComponent } from './ui/characters-storage-list/characters-storage-list.component';
@@ -26,7 +27,8 @@ import { AppComponent } from './app.component';
     NeuralNetworkComponent,
     DialogsComponent,
     CharactersStorageListComponent,
-    CharacterPreviewComponent
+    CharacterPreviewComponent,
+    DropDownComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,3 @@
+<select name="dd-list" id="dd-list" (change)="handleSelect($event)" #select>
+    <option *ngFor="let item of list">{{item.title}}</option>
+</select>
